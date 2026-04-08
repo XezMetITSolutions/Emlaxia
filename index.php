@@ -142,7 +142,38 @@ if ($city) {
             <div class="hero-overlay"></div>
             <div class="container" style="position: relative; z-index: 2;">
                 <div class="hero-content">
-                    <h1><?php echo $lang == 'tr' ? 'Hayalinizdeki <span>Evi</span><br>Bizimle Keşfedin' : 'Discover Your Dream <span>Home</span><br>With Us'; ?></h1>
+                    <h1>
+                        <?php if($lang == 'tr'): ?>
+                            Hayalinizdeki <span id="property-type-rotate">Evi</span><br>Bizimle Keşfedin
+                        <?php else: ?>
+                            Discover Your Dream <span id="property-type-rotate">Home</span><br>With Us
+                        <?php endif; ?>
+                    </h1>
+                    
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const element = document.getElementById('property-type-rotate');
+                            const isTr = '<?php echo $lang; ?>' === 'tr';
+                            
+                            const items = isTr 
+                                ? ['Evi', 'Arsayı', 'Dükkanı', 'Tarlayı', 'Villayı', 'Daireyi'] 
+                                : ['Home', 'Land', 'Shop', 'Field', 'Villa', 'Apartment'];
+                            
+                            let index = 0;
+                            
+                            setInterval(() => {
+                                element.style.opacity = 0;
+                                element.style.transform = 'translateY(10px)';
+                                
+                                setTimeout(() => {
+                                    index = (index + 1) % items.length;
+                                    element.textContent = items[index];
+                                    element.style.opacity = 1;
+                                    element.style.transform = 'translateY(0)';
+                                }, 400);
+                            }, 3000);
+                        });
+                    </script>
                     <p><?php echo $lang == 'tr' ? 'Türkiye\'nin en kaliteli emlak portföyü ile hayallerinizi gerçeğe dönüştürüyoruz. Sizin için sadece en iyisini seçiyoruz.' : 'We turn your dreams into reality with Turkey\'s highest quality real estate portfolio. We select only the best for you.'; ?></p>
                     
                     <div class="search-box-container">
