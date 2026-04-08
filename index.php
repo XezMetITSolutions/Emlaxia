@@ -140,7 +140,7 @@ if ($city) {
         <!-- Hero Section -->
         <section class="main-hero" style="background-image: url('https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?auto=format&fit=crop&w=1920&q=80');">
             <div class="hero-overlay"></div>
-            <div class="container">
+            <div class="container" style="position: relative; z-index: 2;">
                 <div class="hero-content">
                     <h1><?php echo $lang == 'tr' ? 'Hayalinizdeki <span>Evi</span><br>Bizimle Keşfedin' : 'Discover Your Dream <span>Home</span><br>With Us'; ?></h1>
                     <p><?php echo $lang == 'tr' ? 'Türkiye\'nin en kaliteli emlak portföyü ile hayallerinizi gerçeğe dönüştürüyoruz. Sizin için sadece en iyisini seçiyoruz.' : 'We turn your dreams into reality with Turkey\'s highest quality real estate portfolio. We select only the best for you.'; ?></p>
@@ -254,7 +254,7 @@ if ($city) {
                                     </h3>
                                     <div class="feature-pill-group">
                                         <?php if ($listing['area']): ?>
-                                            <div class="feature-pill"><i class="fas fa-vector-square"></i> <?php echo $listing['area']; ?> m&sup2;</div>
+                                            <div class="feature-pill"><i class="fas fa-vector-square"></i> <?php echo $listing['area']; ?> m²</div>
                                         <?php endif; ?>
                                         <?php if ($listing['rooms']): ?>
                                             <div class="feature-pill"><i class="fas fa-bed"></i> <?php echo $listing['rooms']; ?></div>
