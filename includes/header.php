@@ -56,8 +56,7 @@
                         </div>
                     <?php else: ?>
                         <div class="auth-btns">
-                            <a href="/giris" class="btn-login"><?php echo $lang == 'tr' ? 'Üye Girişi' : 'Member Login'; ?></a>
-                            <a href="/kayit" class="btn-register"><?php echo $lang == 'tr' ? 'Yeni Üye' : 'New Member'; ?></a>
+                            <a href="/giris" class="btn-login"><?php echo $lang == 'tr' ? 'Giriş Yap' : 'Login'; ?></a>
                         </div>
                     <?php endif; ?>
                     
@@ -96,7 +95,6 @@
             <?php if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_logged_in'])): ?>
                 <div class="auth-btns" style="flex-direction: column; width: 100%;">
                     <a href="/giris" class="btn-login" style="text-align: center;"><?php echo $lang == 'tr' ? 'Giriş Yap' : 'Login'; ?></a>
-                    <a href="/kayit" class="btn-register" style="text-align: center; background: #D3AF37; color: #0F123D;"><?php echo $lang == 'tr' ? 'Üye Ol' : 'Register'; ?></a>
                 </div>
             <?php endif; ?>
         </div>
