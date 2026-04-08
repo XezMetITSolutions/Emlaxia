@@ -70,7 +70,7 @@ try {
     </style>
 </head>
 <body>
-    <?php include 'uye/includes/uye_header.php'; ?>
+    <?php include 'includes/uye_header.php'; ?>
 
     <div class="dashboard-container">
         <div class="stats-grid">
