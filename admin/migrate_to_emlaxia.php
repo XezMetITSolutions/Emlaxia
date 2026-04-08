@@ -11,7 +11,7 @@ if (!isset($_SESSION['admin_logged_in']) || !$_SESSION['admin_logged_in']) {
 
 try {
     // Önce kullanıcı 8'in varlığını kontrol edelim
-    $userCheck = $pdo->prepare("SELECT id, name, user_type FROM users WHERE id = 8");
+    $userCheck = $pdo->prepare("SELECT id, full_name, user_type FROM users WHERE id = 8");
     $userCheck->execute();
     $emlaxia = $userCheck->fetch();
 
