@@ -138,7 +138,7 @@ if ($city) {
 
     <main>
         <!-- Hero Section -->
-        <section class="main-hero" style="background-image: url('assets/images/luxury_real_estate_hero.jpg');">
+        <section class="main-hero" style="background-image: url('https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?auto=format&fit=crop&w=1920&q=80');">
             <div class="hero-overlay"></div>
             <div class="container">
                 <div class="hero-content">
