@@ -8,11 +8,11 @@ RewriteRule ^emlakci/ - [L,NC]
 RewriteRule ^bireysel/ - [L,NC]
 
 # Handle uye panel pages explicitly for extensionless access
-RewriteRule ^uye/dashboard$ uye/dashboard.php [L,QSA,NC]
-RewriteRule ^uye/tekliflerim$ uye/tekliflerim.php [L,QSA,NC]
-RewriteRule ^uye/favorites$ uye/favorites.php [L,QSA,NC]
-RewriteRule ^uye/mesajlar$ uye/mesajlar.php [L,QSA,NC]
-RewriteRule ^uye/profil$ uye/profil.php [L,QSA,NC]
+RewriteRule ^uye/dashboard/?$ /uye/dashboard.php [L,QSA,NC]
+RewriteRule ^uye/tekliflerim/?$ /uye/tekliflerim.php [L,QSA,NC]
+RewriteRule ^uye/favorites/?$ /uye/favorites.php [L,QSA,NC]
+RewriteRule ^uye/mesajlar/?$ /uye/mesajlar.php [L,QSA,NC]
+RewriteRule ^uye/profil/?$ /uye/profil.php [L,QSA,NC]
 
 # Skip other uye directory requests
 RewriteRule ^uye/ - [L,NC]
