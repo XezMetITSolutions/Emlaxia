@@ -1,0 +1,60 @@
+# Enable Rewrite Engine
+RewriteEngine On
+RewriteBase /
+
+# Skip rewrite for admin, emlakci, bireysel directories
+RewriteRule ^admin/ - [L,NC]
+RewriteRule ^emlakci/ - [L,NC]
+RewriteRule ^bireysel/ - [L,NC]
+RewriteRule ^uye/ - [L,NC]
+
+# İlan detay sayfası - tam SEO URL: ilanlar/listing_type/property_type/city/slug
+# Bu kural en üstte olmalı çünkü en spesifik olanı budur (4 segment)
+RewriteRule ^detay/([^/]+)/([^/]+)/([^/]+)/([^/]+)/?$ ilan.php?listing_type=$1&property_type=$2&city=$3&slug=$4 [L,QSA]
+
+# İlanlar sayfası - 3 segment (listing_type, property_type, city)
+RewriteRule ^ilanlar/([^/]+)/([^/]+)/([^/]+)/?$ ilanlar.php?listing_type=$1&property_type=$2&city=$3 [L,QSA]
+
+# İlanlar sayfası - 2 segment (listing_type, property_type)
+RewriteRule ^ilanlar/([^/]+)/([^/]+)/?$ ilanlar.php?listing_type=$1&property_type=$2 [L,QSA]
+
+# İlanlar sayfası - 1 segment (listing_type)
+RewriteRule ^ilanlar/([^/]+)/?$ ilanlar.php?listing_type=$1 [L,QSA]
+
+# İlanlar sayfası - genel (sadece /ilanlar veya /ilanlar/)
+RewriteRule ^ilanlar/?$ ilanlar.php [L,QSA]
+
+# Eski ilan URL'leri için yedek (sadece slug ile)
+RewriteRule ^ilan/([a-zA-Z0-9-]+)/?$ ilan.php?slug=$1 [L,QSA]
+
+# Skip rewrite if the request is for an actual file, directory or symbolic link
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Handle extensionless PHP files in root directory
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+)$ $1.php [L]
+
+# Redirect /file.php to /file (to force clean URLs) - but not for POST requests
+RewriteCond %{REQUEST_METHOD} !POST
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# 301 Redirects for old English filenames to new Turkish extensionless URLs
+RewriteRule ^about\.php$ /hakkimizda [R=301,L,NC]
+RewriteRule ^corporate\.php$ /kurumsal [R=301,L,NC]
+RewriteRule ^services\.php$ /hizmetler [R=301,L,NC]
+RewriteRule ^property\.php$ /ilan [R=301,L,NC]
+RewriteRule ^offer\.php$ /teklif [R=301,L,NC]
+RewriteRule ^privacy\.php$ /gizlilik [R=301,L,NC]
+RewriteRule ^terms\.php$ /kosullar [R=301,L,NC]
+RewriteRule ^cookies\.php$ /cerezler [R=301,L,NC]
+RewriteRule ^ilan-ver\.php$ /ilan-ver [R=301,L,NC]
+RewriteRule ^kayit-ilan\.php$ /kayit-ilan [R=301,L,NC]
+
+
+
+# Handle 404 errors by redirecting to homepage via 404.php
+ErrorDocument 404 /404.php

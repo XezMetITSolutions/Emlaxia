@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>URL Diagnostic</title>
+</head>
+
+<body>
+    <h1>URL Test</h1>
+    <p>Current Page URL: <span id="currentURL"></span></p>
+    <p>Current Page Path: <span id="currentPath"></span></p>
+    <p>Base Tag: <span id="baseTag"></span></p>
+    <hr>
+    <button onclick="testRelativeURL()">Test Relative URL:process_listing.php'</button>
+    <button onclick="testAbsoluteURL()">Test Absolute URL: 'admin/process_listing.php'</button>
+    <div id="output" style="margin-top:20px; white-space:pre-wrap; font-family:monospace;"></div>
+
+    <script>
+        document.getElementById('currentURL').textContent = window.location.href;
+        document.getElementById('currentPath').textContent = window.location.pathname;
+        const baseTag = document.querySelector('base');
+        document.getElementById('baseTag').textContent = baseTag ? baseTag.href : 'No base tag';
+
+        function log(msg) {
+            document.getElementById('output').textContent += msg + '\n';
+        }
+
+        async function testRelativeURL() {
+            document.getElementById('output').textContent = '';
+            log('=== Testing: fetch(\'process_listing.php\') ===');
+            log('From page: ' + window.location.href);
+
+            // Show what URL will actually be fetched
+            const testURL = new URL('process_listing.php', window.location.href);
+            log('Resolved URL: ' + testURL.href);
+
+            try {
+                const response = await fetch('process_listing.php', {
+                    method: 'POST',
+                    body: new FormData()
+                });
+
+                log('Status: ' + response.status);
+                const text = await response.text();
+                log('Response (first 200 chars): ' + text.substring(0, 200));
+
+                if (text.includes('<!DOCTYPE')) {
+                    log('❌ ERROR: Got HTML instead of JSON!');
+                } else if (text.startsWith('{')) {
+                    log('✅ SUCCESS: Got JSON');
+                }
+            } catch (e) {
+                log('Error: ' + e.message);
+            }
+        }
+
+        async function testAbsoluteURL() {
+            document.getElementById('output').textContent = '';
+            log('=== Testing: fetch(\'admin/process_listing.php\') ===');
+            log('From page: ' + window.location.href);
+
+            const testURL = new URL('admin/process_listing.php', window.location.origin);
+            log('Resolved URL: ' + testURL.href);
+
+            try {
+                const response = await fetch('admin/process_listing.php', {
+                    method: 'POST',
+                    body: new FormData()
+                });
+
+                log('Status: ' + response.status);
+                const text = await response.text();
+                log('Response (first 200 chars): ' + text.substring(0, 200));
+
+                if (text.includes('<!DOCTYPE')) {
+                    log('❌ ERROR: Got HTML instead of JSON!');
+                } else if (text.startsWith('{')) {
+                    log('✅ SUCCESS: Got JSON');
+                }
+            } catch (e) {
+                log('Error: ' + e.message);
+            }
+        }
+    </script>
+</body>
+
+</html>

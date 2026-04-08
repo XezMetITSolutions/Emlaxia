@@ -1,0 +1,298 @@
+<?php
+/**
+ * Giriş Sayfası - Emlakçı ve Bireysel
+ */
+ob_start();
+require_once 'config.php';
+require_once 'includes/auth.php';
+
+// Zaten giriş yapılmışsa yönlendir
+if (checkUserAuth()) {
+    $redirect = '/uye/dashboard';
+    if ($_SESSION['user_type'] === 'emlakci') $redirect = '/emlakci/dashboard';
+    elseif ($_SESSION['user_type'] === 'bireysel') $redirect = '/bireysel/dashboard';
+    
+    header('Location: ' . $redirect);
+    exit;
+}
+
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    try {
+        $username = trim($_POST['username'] ?? '');
+        $password = $_POST['password'] ?? '';
+
+        if (!empty($username) && !empty($password)) {
+            $result = loginUser($pdo, $username, $password);
+            if ($result['success']) {
+                // Ensure no output before header redirect
+                session_write_close();
+                if (ob_get_length())
+                    ob_end_clean();
+
+                $redirect = '/uye/dashboard';
+                if ($_SESSION['user_type'] === 'emlakci') $redirect = '/emlakci/dashboard';
+                elseif ($_SESSION['user_type'] === 'bireysel') $redirect = '/bireysel/dashboard';
+
+                header('Location: ' . $redirect);
+                exit;
+            } else {
+                $error = $result['message'];
+            }
+        } else {
+            $error = $lang === 'tr' ? 'Kullanıcı adı ve şifre gereklidir.' : 'Username and password are required.';
+        }
+    } catch (Throwable $e) {
+        $error = "Hata oluştu: " . $e->getMessage();
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="<?php echo $lang; ?>">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <?php echo $lang === 'tr' ? 'Giriş Yap' : 'Login'; ?> - Emlaxia
+    </title>
+    <base href="/">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .login-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 24px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1e88e5, #43a047, #1e88e5);
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .brand-logo {
+            max-width: 220px;
+            height: auto;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0;
+        }
+
+        .login-logo p {
+            color: #64748b;
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            background: #f8fafc;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #1e88e5;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #1e88e5, #1565c0);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 0.5rem;
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #1565c0, #0d47a1);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(30, 136, 229, 0.3);
+        }
+
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .register-link a {
+            color: #1e88e5;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: #94a3b8;
+            font-size: 0.85rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .admin-link {
+            text-align: center;
+            font-size: 0.8rem;
+        }
+
+        .admin-link a {
+            color: #94a3b8;
+            text-decoration: none;
+        }
+
+        .admin-link a:hover {
+            color: #1e88e5;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-page">
+        <div class="login-card">
+            <div class="login-logo">
+                <img src="/Logo.png" alt="Emlaxia Logo" class="brand-logo">
+                <p>
+                    <?php echo $lang === 'tr' ? 'Hesabınıza giriş yapın' : 'Login to your account'; ?>
+                </p>
+            </div>
+
+            <?php if ($error): ?>
+                <div class="alert alert-error">
+                    <?php echo htmlspecialchars($error); ?>
+                </div>
+            <?php endif; ?>
+
+            <form method="POST" action="/giris">
+                <div class="form-group">
+                    <label>
+                        <?php echo $lang === 'tr' ? 'Kullanıcı Adı veya E-posta' : 'Username or Email'; ?>
+                    </label>
+                    <input type="text" name="username" required autofocus
+                        placeholder="<?php echo $lang === 'tr' ? 'Kullanıcı adınız veya e-posta' : 'Your username or email'; ?>">
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <?php echo t('password'); ?>
+                    </label>
+                    <input type="password" name="password" required
+                        placeholder="<?php echo $lang === 'tr' ? 'Şifreniz' : 'Your password'; ?>">
+                </div>
+
+                <button type="submit" class="btn-login">
+                    <?php echo $lang === 'tr' ? 'Giriş Yap' : 'Login'; ?>
+                </button>
+            </form>
+
+            <div class="register-link">
+                <?php echo $lang === 'tr' ? 'Hesabınız yok mu?' : "Don't have an account?"; ?>
+                <a href="/kayit">
+                    <?php echo $lang === 'tr' ? 'Kayıt Ol' : 'Register'; ?>
+                </a>
+            </div>
+
+            <div class="divider">
+                <?php echo $lang === 'tr' ? 'veya' : 'or'; ?>
+            </div>
+
+            <div class="register-link" style="margin-top: 0;">
+                <a href="/">←
+                    <?php echo $lang === 'tr' ? 'Ana Sayfaya Dön' : 'Back to Home'; ?>
+                </a>
+            </div>
+
+            <!-- Admin login hidden as requested -->
+        </div>
+    </div>
+</body>
+
+</html>
+<?php ob_end_flush(); ?>

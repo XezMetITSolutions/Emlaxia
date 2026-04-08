@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>POST Request Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+
+        button {
+            background: #0e639c;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            background: #1177bb;
+        }
+
+        pre {
+            background: #252526;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .success {
+            color: #4ec9b0;
+        }
+
+        .error {
+            color: #f48771;
+        }
+
+        .info {
+            color: #569cd6;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🧪 POST Request Test</h1>
+    <p>Bu sayfa POST isteklerinin doğru çalışıp çalışmadığını test eder.</p>
+
+    <button onclick="testURL('process_listing.php')">Test process_listing.php</button>
+    <button onclick="testURL('delete_listing.php')">Test delete_listing.php</button>
+    <button onclick="clearLog()">Clear Log</button>
+
+    <div id="log"></div>
+
+    <script>
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const pre = document.createElement('pre');
+            pre.className = type;
+            pre.textContent = message;
+            logDiv.appendChild(pre);
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+
+        async function testURL(url) {
+            log(`\n========== Testing: ${url} ==========`, 'info');
+            log(`Time: ${new Date().toISOString()}`, 'info');
+
+            const formData = new FormData();
+            formData.append('title_tr', 'Test Title');
+            formData.append('test', 'true');
+
+            try {
+                log(`\n1️⃣ Sending POST request to: ${url}`, 'info');
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                log(`\n2️⃣ Response received!`, 'success');
+                log(`   Status: ${response.status}`, 'info');
+                log(`   Status Text: ${response.statusText}`, 'info');
+
+                log(`\n3️⃣ Response Headers:`, 'info');
+                for (let [key, value] of response.headers.entries()) {
+                    log(`   ${key}: ${value}`, 'info');
+                }
+
+                const rawText = await response.text();
+
+                log(`\n4️⃣ Raw Response Body:`, 'info');
+                log(`   Length: ${rawText.length} characters`, 'info');
+                log(`   First 500 chars:\n${rawText.substring(0, 500)}`, 'info');
+
+                log(`\n5️⃣ Parsing as JSON...`, 'info');
+                try {
+                    const data = JSON.parse(rawText);
+                    log(`   ✅ SUCCESS! Valid JSON received:`, 'success');
+                    log(JSON.stringify(data, null, 2), 'success');
+                } catch (e) {
+                    log(`   ❌ FAILED! Not valid JSON`, 'error');
+                    log(`   Error: ${e.message}`, 'error');
+
+                    if (rawText.includes('<!DOCTYPE') || rawText.includes('<html')) {
+                        log(`   ⚠️ Response is HTML (not JSON)`, 'error');
+                        log(`   This means the server is sending an error page`, 'error');
+                    }
+                }
+
+            } catch (error) {
+                log(`\n❌ Network Error: ${error.message}`, 'error');
+            }
+
+            log(`\n========== Test Complete ==========\n`, 'info');
+        }
+
+        // Auto-test on load
+        window.addEventListener('load', () => {
+            log('Page loaded. Click a button to test POST requests.', 'info');
+        });
+    </script>
+</body>
+
+</html>

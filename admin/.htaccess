@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Handle extensionless PHP files in admin directory
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+)$ $1.php [L]
+
+# Redirect .php to extensionless in admin directory (only for non-POST requests)
+RewriteCond %{REQUEST_METHOD} !POST
+RewriteCond %{THE_REQUEST} \s/admin/(.+?)\.php[\s?] [NC]
+RewriteRule ^ /admin/%1 [R=301,L]

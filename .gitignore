@@ -1,0 +1,18 @@
+# Database config
+config.php
+
+# PHP logs
+*.log
+error_log
+
+# Uploads
+uploads/
+assets/images/uploads/
+
+# IDE/System files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.gemini/
+.git/
