@@ -1,21 +1,17 @@
 # Enable Rewrite Engine
 RewriteEngine On
 RewriteBase /
+Options -MultiViews
 
-# Skip rewrite for admin, emlakci, bireysel directories
-RewriteRule ^admin/ - [L,NC]
-RewriteRule ^emlakci/ - [L,NC]
-RewriteRule ^bireysel/ - [L,NC]
+# Skip rewrite if the request is for an actual file, directory or symbolic link
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
 
-# Handle uye panel pages explicitly for extensionless access
-RewriteRule ^uye/dashboard/?$ /uye/dashboard.php [L,QSA,NC]
-RewriteRule ^uye/tekliflerim/?$ /uye/tekliflerim.php [L,QSA,NC]
-RewriteRule ^uye/favorites/?$ /uye/favorites.php [L,QSA,NC]
-RewriteRule ^uye/mesajlar/?$ /uye/mesajlar.php [L,QSA,NC]
-RewriteRule ^uye/profil/?$ /uye/profil.php [L,QSA,NC]
-
-# Skip other uye directory requests
-RewriteRule ^uye/ - [L,NC]
+# Handle extensionless PHP files in current directory and subdirectories
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+)$ $1.php [L]
 
 # İlan detay sayfası - tam SEO URL: ilanlar/listing_type/property_type/city/slug
 RewriteRule ^detay/([^/]+)/([^/]+)/([^/]+)/([^/]+)/?$ ilan.php?listing_type=$1&property_type=$2&city=$3&slug=$4 [L,QSA]
@@ -34,16 +30,6 @@ RewriteRule ^ilanlar/?$ ilanlar.php [L,QSA]
 
 # Eski ilan URL'leri için yedek (sadece slug ile)
 RewriteRule ^ilan/([a-zA-Z0-9-]+)/?$ ilan.php?slug=$1 [L,QSA]
-
-# Skip rewrite if the request is for an actual file, directory or symbolic link
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^ - [L]
-
-# Handle extensionless PHP files in root directory
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.+)$ $1.php [L]
 
 # Redirect /file.php to /file (to force clean URLs) - but not for POST requests
 RewriteCond %{REQUEST_METHOD} !POST
