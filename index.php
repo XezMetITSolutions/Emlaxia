@@ -141,83 +141,93 @@ if ($city) {
         <section class="main-hero" style="background-image: url('https://images.unsplash.com/photo-1590422114757-01372f85764c?auto=format&fit=crop&w=1920&q=80');">
             <div class="hero-overlay"></div>
             <div class="container" style="position: relative; z-index: 2;">
-                <div class="hero-content">
-                    <h1>
-                        <?php if($lang == 'tr'): ?>
-                            Hayalinizdeki <span id="property-type-rotate">Evi</span><br>Bizimle Keşfedin
-                        <?php else: ?>
-                            Discover Your Dream <span id="property-type-rotate">Home</span><br>With Us
-                        <?php endif; ?>
-                    </h1>
-                    
-                    <script>
-                        document.addEventListener('DOMContentLoaded', function() {
-                            const element = document.getElementById('property-type-rotate');
-                            const isTr = '<?php echo $lang; ?>' === 'tr';
-                            
-                            const items = isTr 
-                                ? ['Evi', 'Arsayı', 'Dükkanı', 'Tarlayı', 'Villayı', 'Daireyi'] 
-                                : ['Home', 'Land', 'Shop', 'Field', 'Villa', 'Apartment'];
-                            
-                            let index = 0;
-                            
-                            setInterval(() => {
-                                element.style.opacity = 0;
-                                element.style.transform = 'translateY(10px)';
+                <div class="hero-wrapper">
+                    <div class="hero-content">
+                        <h1>
+                            <?php if($lang == 'tr'): ?>
+                                Hayalinizdeki <span id="property-type-rotate">Evi</span><br>Bizimle Keşfedin
+                            <?php else: ?>
+                                Discover Your Dream <span id="property-type-rotate">Home</span><br>With Us
+                            <?php endif; ?>
+                        </h1>
+                        
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const element = document.getElementById('property-type-rotate');
+                                const isTr = '<?php echo $lang; ?>' === 'tr';
                                 
-                                setTimeout(() => {
-                                    index = (index + 1) % items.length;
-                                    element.textContent = items[index];
-                                    element.style.opacity = 1;
-                                    element.style.transform = 'translateY(0)';
-                                }, 400);
-                            }, 3000);
-                        });
-                    </script>
-                    <p><?php echo $lang == 'tr' ? 'Türkiye\'nin en kaliteli emlak portföyü ile hayallerinizi gerçeğe dönüştürüyoruz. Sizin için sadece en iyisini seçiyoruz.' : 'We turn your dreams into reality with Turkey\'s highest quality real estate portfolio. We select only the best for you.'; ?></p>
-                    
-                    <div class="search-box-container">
-                        <form method="GET" action="ilanlar" id="homepage-search-form">
-                            <div class="search-form-grid">
-                                <div class="form-group">
-                                    <label><?php echo t('listing_type'); ?></label>
-                                    <select name="listing_type" class="form-control-premium">
-                                        <option value="satilik"><?php echo t('for_sale'); ?></option>
-                                        <option value="kiralik"><?php echo t('for_rent'); ?></option>
-                                    </select>
-                                </div>
+                                const items = isTr 
+                                    ? ['Evi', 'Arsayı', 'Dükkanı', 'Tarlayı', 'Villayı', 'Daireyi'] 
+                                    : ['Home', 'Land', 'Shop', 'Field', 'Villa', 'Apartment'];
                                 
-                                <div class="form-group">
-                                    <label><?php echo t('property_type'); ?></label>
-                                    <select name="property_type" class="form-control-premium">
-                                        <option value="all"><?php echo $lang == 'tr' ? 'Tüm Türler' : 'All Types'; ?></option>
-                                        <option value="ev"><?php echo t('house'); ?></option>
-                                        <option value="daire"><?php echo t('apartment'); ?></option>
-                                        <option value="arsa"><?php echo t('land'); ?></option>
-                                        <option value="tarla"><?php echo t('tarla'); ?></option>
-                                        <option value="villa"><?php echo t('villa'); ?></option>
-                                    </select>
-                                </div>
+                                let index = 0;
                                 
-                                <div class="form-group">
-                                    <label><?php echo $lang == 'tr' ? 'Şehir' : 'City'; ?></label>
-                                    <select name="city" id="city-select-home" class="form-control-premium">
-                                        <option value=""><?php echo $lang == 'tr' ? 'Tüm Şehirler' : 'All Cities'; ?></option>
-                                        <?php foreach ($cities as $city_option): ?>
-                                            <option value="<?php echo htmlspecialchars($city_option['il_adi']); ?>" data-id="<?php echo $city_option['id']; ?>">
-                                                <?php echo htmlspecialchars($city_option['il_adi']); ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
+                                setInterval(() => {
+                                    element.style.opacity = 0;
+                                    element.style.transform = 'translateY(10px)';
+                                    
+                                    setTimeout(() => {
+                                        index = (index + 1) % items.length;
+                                        element.textContent = items[index];
+                                        element.style.opacity = 1;
+                                        element.style.transform = 'translateY(0)';
+                                    }, 400);
+                                }, 3000);
+                            });
+                        </script>
+                        <p><?php echo $lang == 'tr' ? 'Türkiye\'nin en kaliteli emlak portföyü ile hayallerinizi gerçeğe dönüştürüyoruz. Sizin için sadece en iyisini seçiyoruz.' : 'We turn your dreams into reality with Turkey\'s highest quality real estate portfolio. We select only the best for you.'; ?></p>
+                        
+                        <div class="search-box-container">
+                            <form method="GET" action="ilanlar" id="homepage-search-form">
+                                <div class="search-form-grid">
+                                    <div class="form-group">
+                                        <label><?php echo t('listing_type'); ?></label>
+                                        <select name="listing_type" class="form-control-premium">
+                                            <option value="satilik"><?php echo t('for_sale'); ?></option>
+                                            <option value="kiralik"><?php echo t('for_rent'); ?></option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label><?php echo t('property_type'); ?></label>
+                                        <select name="property_type" class="form-control-premium">
+                                            <option value="all"><?php echo $lang == 'tr' ? 'Tüm Türler' : 'All Types'; ?></option>
+                                            <option value="ev"><?php echo t('house'); ?></option>
+                                            <option value="daire"><?php echo t('apartment'); ?></option>
+                                            <option value="arsa"><?php echo t('land'); ?></option>
+                                            <option value="tarla"><?php echo t('tarla'); ?></option>
+                                            <option value="villa"><?php echo t('villa'); ?></option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label><?php echo $lang == 'tr' ? 'Şehir' : 'City'; ?></label>
+                                        <select name="city" id="city-select-home" class="form-control-premium">
+                                            <option value=""><?php echo $lang == 'tr' ? 'Tüm Şehirler' : 'All Cities'; ?></option>
+                                            <?php foreach ($cities as $city_option): ?>
+                                                <option value="<?php echo htmlspecialchars($city_option['il_adi']); ?>" data-id="<?php echo $city_option['id']; ?>">
+                                                    <?php echo htmlspecialchars($city_option['il_adi']); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
 
-                                <div class="form-group">
-                                    <button type="submit" class="btn-search-premium" style="width: 100%;">
-                                        <i class="fas fa-search"></i> <?php echo $lang == 'tr' ? 'İLAN BUL' : 'FIND ADS'; ?>
-                                    </button>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn-search-premium" style="width: 100%;">
+                                            <i class="fas fa-search"></i> <?php echo $lang == 'tr' ? 'İLAN BUL' : 'FIND ADS'; ?>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="hero-image-side">
+                        <img src="KanalIstanbul.jpeg" alt="Kanal Istanbul">
+                        <div class="image-floating-badge">
+                            <i class="fas fa-star"></i>
+                            <span><?php echo $lang == 'tr' ? 'Özel Projeler' : 'Special Projects'; ?></span>
+                        </div>
                     </div>
                 </div>
             </div>
