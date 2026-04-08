@@ -29,7 +29,9 @@ h1, h2, h3, .premium-heading {
 .main-hero {
     height: 90vh;
     min-height: 700px;
-    background-position: center bottom; /* View more of the pool/villa */
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
     display: flex;
     align-items: center;
     position: relative;
