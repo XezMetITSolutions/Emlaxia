@@ -176,34 +176,15 @@ if ($is_edit && !empty($listing['district'])) {
             gap: 1rem;
         }
 
-        .dropzone-content svg {
-            color: #3b82f6;
-            opacity: 0.7;
-        }
+        .dropzone-content svg { color: #3b82f6; opacity: 0.7; }
+        .dropzone-content h3 { font-size: 1.25rem; font-weight: 600; color: #1e293b; margin: 0; }
+        .dropzone-content p { color: #64748b; margin: 0; }
+        .dropzone-content .upload-hint { font-size: 0.85rem; color: #94a3b8; }
 
-        .dropzone-content h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin: 0;
-        }
-
-        .dropzone-content p {
-            color: #64748b;
-            margin: 0;
-        }
-
-        .dropzone-content .upload-hint {
-            font-size: 0.8rem;
-            color: #94a3b8;
-            margin-top: 0.5rem;
-        }
-
-        /* Uploaded Images Container */
         .uploaded-images-container {
             margin-top: 2rem;
-            background: white;
-            border-radius: 12px;
+            background: #ffffff;
+            border-radius: 16px;
             padding: 1.5rem;
             border: 1px solid #e2e8f0;
         }
@@ -220,16 +201,29 @@ if ($is_edit && !empty($listing['district'])) {
         .uploaded-images-header h4 {
             display: flex;
             align-items: center;
-            font-size: 1rem;
+            gap: 0.5rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: #1e293b;
             margin: 0;
+        }
+
+        .main-image-hint {
+            display: flex;
+            align-items: center;
             gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            background: rgba(59, 130, 246, 0.05);
+            border-radius: 10px;
+            border-left: 3px solid #3b82f6;
         }
 
         .uploaded-images-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 1rem;
         }
 
@@ -238,15 +232,19 @@ if ($is_edit && !empty($listing['district'])) {
             border-radius: 12px;
             overflow: hidden;
             aspect-ratio: 1;
-            background: #f1f5f9;
-            cursor: move;
+            background: #f8fafc;
+            cursor: pointer;
             transition: all 0.2s ease;
-            border: 2px solid transparent;
+            border: 3px solid transparent;
         }
 
         .uploaded-image-item:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        .uploaded-image-item.main-image {
+            border-color: #f59e0b;
         }
 
         .uploaded-image-item img {
@@ -257,8 +255,8 @@ if ($is_edit && !empty($listing['district'])) {
 
         .uploaded-image-item .btn-remove {
             position: absolute;
-            top: 5px;
-            right: 5px;
+            top: 6px;
+            right: 6px;
             width: 24px;
             height: 24px;
             border-radius: 50%;
@@ -269,22 +267,60 @@ if ($is_edit && !empty($listing['district'])) {
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
+            font-size: 0.75rem;
             z-index: 10;
         }
 
         .uploaded-image-item .main-badge {
             position: absolute;
-            top: 5px;
-            left: 5px;
+            top: 6px;
+            left: 6px;
             background: #f59e0b;
             color: white;
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             font-weight: 700;
             padding: 2px 6px;
-            border-radius: 4px;
-            z-index: 10;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+
+        .uploaded-image-item .set-main-btn {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.7);
+            color: white;
+            border: none;
+            padding: 4px 0;
+            font-size: 0.7rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .uploaded-image-item:hover .set-main-btn {
+            opacity: 1;
+        }
+
+        .btn-add-more {
+            padding: 0.5rem 1rem;
+            background: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-add-more:hover { background: #e2e8f0; }
+
 
         /* Site Özellikleri Grid */
         .site-features-grid {
@@ -1095,11 +1131,11 @@ if ($is_edit && !empty($listing['district'])) {
             <div class="form-section">
                 <div class="form-section-title">📷 Resimler</div>
                 <p style="color: #64748b; margin-bottom: 1.5rem; font-size: 0.9rem;">
-                    Maksimum 20 resim yükleyebilirsiniz. Resimleri sürükleyip bırakabilir veya butona tıklayarak seçebilirsiniz.
+                    Maksimum 30 resim yükleyebilirsiniz. Resimleri sürükleyip bırakabilir veya butona tıklayarak seçebilirsiniz. Ana resmi belirlemek için resmin üzerine tıklayın.
                 </p>
 
                 <!-- Premium Drop Zone -->
-                <div class="multi-upload-dropzone" id="multi-dropzone" onclick="document.getElementById('imageInput').click()">
+                <div class="multi-upload-dropzone" id="multi-dropzone">
                     <div class="dropzone-content">
                         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
@@ -1107,33 +1143,41 @@ if ($is_edit && !empty($listing['district'])) {
                             <polyline points="21 15 16 10 5 21"></polyline>
                         </svg>
                         <h3>Resimleri Buraya Sürükleyin veya Tıklayın</h3>
-                        <p class="upload-hint">PNG, JPG, JPEG, WEBP • Maks. 20 resim • Maks. 5MB/resim</p>
+                        <p class="upload-hint">PNG, JPG, JPEG, WEBP • Maks. 30 resim • Maks. 5MB/resim</p>
+                        <button type="button" class="btn-submit" style="margin-top: 0.5rem; padding: 0.5rem 1.5rem;" onclick="event.stopPropagation(); document.getElementById('imageInput').click()">Dosya Seç</button>
                     </div>
                     <input type="file" id="imageInput" name="uploaded_images[]" multiple accept="image/*" style="display: none;" onchange="previewImages(this)">
                 </div>
 
                 <!-- Yüklenen Resimler Grid -->
-                <div class="uploaded-images-container" id="uploaded-images-container" style="display: <?php echo $is_edit ? 'block' : 'none'; ?>;">
+                <div class="uploaded-images-container" id="uploaded-images-container" style="display: none;">
                     <div class="uploaded-images-header">
                         <h4>
-                            <i class="fas fa-images"></i> Yüklenen Resimler (<span id="image-count">0</span>/20)
+                            <i class="fas fa-images"></i> Yüklenen Resimler (<span id="image-count">0</span>/30)
                         </h4>
+                        <button type="button" class="btn-add-more" onclick="document.getElementById('imageInput').click()">
+                            <i class="fas fa-plus"></i> Daha Fazla Ekle
+                        </button>
+                    </div>
+                    <div class="main-image-hint">
+                        <i class="fas fa-info-circle"></i> Ana resmi belirlemek için bir resme tıklayın veya "Yıldız" ikonunu kullanın.
                     </div>
                     <div class="uploaded-images-grid" id="previewGrid">
                         <?php if ($is_edit): ?>
-                            <?php for ($i = 1; $i <= 20; $i++): ?>
-                                <?php if (!empty($listing['image' . $i])): ?>
-                                    <div class="uploaded-image-item" data-existing="<?php echo htmlspecialchars($listing['image' . $i]); ?>">
-                                        <?php if ($i === 1): ?><span class="main-badge">Ana Resim</span><?php endif; ?>
-                                        <img src="/uploads/<?php echo htmlspecialchars($listing['image' . $i]); ?>" alt="">
-                                        <button type="button" class="btn-remove" onclick="removePreview(this)">✕</button>
-                                    </div>
-                                <?php endif; ?>
-                            <?php endfor; ?>
+                            <?php 
+                            $existing_images = [];
+                            for ($i = 1; $i <= 20; $i++) {
+                                if (!empty($listing['image' . $i])) {
+                                    $existing_images[] = $listing['image' . $i];
+                                }
+                            }
+                            ?>
+                            <input type="hidden" id="existing-images-json" value='<?php echo json_encode($existing_images); ?>'>
                         <?php endif; ?>
                     </div>
                 </div>
                 <input type="hidden" name="existing_images_list" id="existingImagesList" value="">
+                <input type="hidden" name="main_image_index" id="main_image_index" value="0">
             </div>
 
             <!-- 7. Ek Notlar -->
@@ -1235,43 +1279,82 @@ if ($is_edit && !empty($listing['district'])) {
 
 
     let uploadedFiles = [];
-    function previewImages(input) {
-        const grid = document.getElementById('previewGrid');
-        const container = document.getElementById('uploaded-images-container');
-        container.style.display = 'block';
+    let mainImageIndex = 0;
 
+    // Load existing images in edit mode
+    const existingJson = document.getElementById('existing-images-json');
+    if (existingJson && existingJson.value) {
+        try {
+            const images = JSON.parse(existingJson.value);
+            images.forEach((img, idx) => {
+                uploadedFiles.push({
+                    file: null,
+                    preview: '/uploads/' + img,
+                    name: img,
+                    isExisting: true
+                });
+            });
+            renderImages();
+        } catch(e) { console.error(e); }
+    }
+
+    function previewImages(input) {
         Array.from(input.files).forEach(file => {
-            if (uploadedFiles.length >= 20) return;
-            uploadedFiles.push(file);
+            if (uploadedFiles.length >= 30) return;
             const reader = new FileReader();
             reader.onload = (e) => {
-                const div = document.createElement('div');
-                div.className = 'uploaded-image-item';
-                div.innerHTML = `<img src="${e.target.result}" alt=""><button type="button" class="btn-remove" onclick="removePreview(this, ${uploadedFiles.length - 1})">✕</button>`;
-                grid.appendChild(div);
-                updateImageCount();
+                uploadedFiles.push({
+                    file: file,
+                    preview: e.target.result,
+                    name: file.name,
+                    isExisting: false
+                });
+                renderImages();
             };
             reader.readAsDataURL(file);
         });
+        input.value = ''; // Reset input
     }
 
-    function removePreview(btn, index) {
-        const item = btn.closest('.uploaded-image-item');
-        if (item.dataset.existing) {
-            item.remove();
-        } else {
-            // New uploads: we might need a better way to track indices if multiple removals occur
-            // For now, simpler removal
-            item.remove();
-            // Optional: remove from uploadedFiles array too if tracking by index
-        }
+    function renderImages() {
+        const grid = document.getElementById('previewGrid');
+        grid.innerHTML = '';
+        
+        uploadedFiles.forEach((img, idx) => {
+            const isMain = idx === mainImageIndex;
+            const div = document.createElement('div');
+            div.className = `uploaded-image-item ${isMain ? 'main-image' : ''}`;
+            div.onclick = () => setMainImage(idx);
+            
+            div.innerHTML = `
+                <img src="${img.preview}" alt="">
+                ${isMain ? '<div class="main-badge"><i class="fas fa-star"></i> Ana Resim</div>' : ''}
+                <button type="button" class="btn-remove" onclick="event.stopPropagation(); removeImage(${idx})">✕</button>
+                ${!isMain ? `<button type="button" class="set-main-btn">Ana Resim Yap</button>` : ''}
+            `;
+            grid.appendChild(div);
+        });
+        
         updateImageCount();
     }
 
+    function setMainImage(idx) {
+        mainImageIndex = idx;
+        renderImages();
+    }
+
+    function removeImage(idx) {
+        uploadedFiles.splice(idx, 1);
+        if (mainImageIndex === idx) mainImageIndex = 0;
+        else if (mainImageIndex > idx) mainImageIndex--;
+        renderImages();
+    }
+
     function updateImageCount() {
-        const total = document.querySelectorAll('.uploaded-image-item').length;
-        document.getElementById('image-count').textContent = total;
-        document.getElementById('uploaded-images-container').style.display = total > 0 ? 'block' : 'none';
+        const count = uploadedFiles.length;
+        document.getElementById('image-count').textContent = count;
+        document.getElementById('uploaded-images-container').style.display = count > 0 ? 'block' : 'none';
+        document.getElementById('multi-dropzone').style.display = count >= 30 ? 'none' : 'flex';
     }
 
     // Drag and Drop support
@@ -1292,24 +1375,31 @@ if ($is_edit && !empty($listing['district'])) {
     });
 
     dropzone.addEventListener('drop', e => {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        const input = document.getElementById('imageInput');
-        previewImages({ files: files });
+        previewImages({ files: e.dataTransfer.files });
     });
 
-    // Initial count
-    updateImageCount();
+    dropzone.addEventListener('click', () => document.getElementById('imageInput').click());
 
     document.getElementById('listingForm').addEventListener('submit', function(e) {
         e.preventDefault();
         document.getElementById('savingOverlay').classList.add('active');
+        
         const fd = new FormData(this);
-        const ex = [];
-        document.querySelectorAll('.uploaded-image-item[data-existing]').forEach(i => ex.push(i.dataset.existing));
-        fd.set('existing_images_list', JSON.stringify(ex));
+        
+        // Handle images
+        const existingImages = [];
         fd.delete('uploaded_images[]');
-        uploadedFiles.forEach(f => fd.append('uploaded_images[]', f));
+        
+        uploadedFiles.forEach((img, idx) => {
+            if (img.isExisting) {
+                existingImages.push(img.name);
+            } else {
+                fd.append('uploaded_images[]', img.file);
+            }
+        });
+        
+        fd.set('existing_images_list', JSON.stringify(existingImages));
+        fd.set('main_image_index', mainImageIndex);
         fd.set('status', 'active');
 
         fetch('/bireysel/process_listing.php', { method: 'POST', body: fd })

@@ -188,13 +188,10 @@ function createSlug($str)
 }
 
 // Resim yükleme
-$images = [];
-$existing_images_list = [];
+$all_images = [];
 if (!empty($_POST['existing_images_list'])) {
-    $existing_images_list = json_decode($_POST['existing_images_list'], true) ?? [];
+    $all_images = json_decode($_POST['existing_images_list'], true) ?? [];
 }
-
-$all_images = $existing_images_list;
 
 $uploaded_images = $_FILES['uploaded_images'] ?? null;
 if ($uploaded_images && !empty($uploaded_images['name'])) {
@@ -203,8 +200,7 @@ if ($uploaded_images && !empty($uploaded_images['name'])) {
             $ext = strtolower(pathinfo($uploaded_images['name'][$i], PATHINFO_EXTENSION));
             if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
                 $filename = time() . '_' . uniqid() . '_' . basename($uploaded_images['name'][$i]);
-                $target = '../uploads/' . $filename;
-                if (move_uploaded_file($uploaded_images['tmp_name'][$i], $target)) {
+                if (move_uploaded_file($uploaded_images['tmp_name'][$i], '../uploads/' . $filename)) {
                     $all_images[] = $filename;
                 }
             }
@@ -212,10 +208,17 @@ if ($uploaded_images && !empty($uploaded_images['name'])) {
     }
 }
 
-for ($i = 0; $i < 20; $i++) {
-    if (isset($all_images[$i])) {
-        $images['image' . ($i + 1)] = $all_images[$i];
-    }
+// Ana Resim Sıralaması
+$main_image_index = isset($_POST['main_image_index']) ? (int)$_POST['main_image_index'] : 0;
+if ($main_image_index > 0 && isset($all_images[$main_image_index])) {
+    $main_image = $all_images[$main_image_index];
+    array_splice($all_images, $main_image_index, 1);
+    array_unshift($all_images, $main_image);
+}
+
+$images = [];
+for ($i = 1; $i <= 20; $i++) {
+    $images['image' . $i] = $all_images[$i - 1] ?? null;
 }
 
 try {
@@ -266,11 +269,8 @@ try {
                 site_evcil_hayvan = :site_evcil_hayvan, site_engelli_erisimi = :site_engelli_erisimi,
                 approval_status = 'pending'";
 
-        for ($i = 1; $i <= 20; $i++) {
-            if (isset($images['image' . $i])) {
-                $sql .= ", image$i = :image$i";
-            }
-        }
+        for ($i = 1; $i <= 20; $i++)
+            $sql .= ", image$i = :image$i";
         $sql .= " WHERE id = :id AND user_id = :uid";
 
         $stmt = $pdo->prepare($sql);
@@ -377,11 +377,8 @@ try {
             ':uid' => $user_id
         ];
 
-        for ($i = 1; $i <= 20; $i++) {
-            if (isset($images['image' . $i])) {
-                $params[":image$i"] = $images['image' . $i];
-            }
-        }
+        for ($i = 1; $i <= 20; $i++)
+            $params[":image$i"] = $images["image$i"];
 
         $stmt->execute($params);
         echo json_encode(['success' => true, 'message' => 'İlan güncellendi! Onay sürecine gönderildi.', 'id' => $id]);
@@ -413,11 +410,8 @@ try {
                 site_toplanti_odasi, site_bahce, site_evcil_hayvan, site_engelli_erisimi,
                 user_id, user_type, created_by, approval_status, ilan_sahibi_turu";
 
-        if (!empty($images)) {
-            foreach ($images as $key => $value) {
-                $sql .= ", $key";
-            }
-        }
+        for ($i = 1; $i <= 20; $i++)
+            $sql .= ", image$i";
 
         $sql .= ") VALUES (:title_tr, :title_en, :description_tr, :description_en,
                 :property_type, :property_type_en, :listing_type, :price, :area, :rooms, :bathrooms,
@@ -443,12 +437,8 @@ try {
                 :site_kres, :site_cafe, :site_restorant, :site_kuafor,
                 :site_toplanti_odasi, :site_bahce, :site_evcil_hayvan, :site_engelli_erisimi,
                 :user_id, 'emlakci', :created_by, 'pending', 'Emlakçı'";
-
-        if (!empty($images)) {
-            foreach ($images as $key => $value) {
-                $sql .= ", :$key";
-            }
-        }
+        for ($i = 1; $i <= 20; $i++)
+            $sql .= ", :image$i";
         $sql .= ")";
 
         $stmt = $pdo->prepare($sql);
