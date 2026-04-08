@@ -121,181 +121,180 @@ if ($district) {
     <title><?php echo t('listings'); ?> — Emlaxia.com</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/assets/css/style.css?v=<?php echo CSS_VERSION; ?>">
+    <link rel="stylesheet" href="/assets/css/premium-home.css?v=<?php echo CSS_VERSION; ?>">
 </head>
 <body>
     <?php include 'includes/header.php'; ?>
 
     <main>
-        <div class="container">
-            <h1><?php echo t('listings'); ?></h1>
-
-            <div class="filters">
-                <form method="GET" action="ilanlar" class="filter-form">
-                    <div class="filter-group">
-                        <label><?php echo t('listing_type'); ?></label>
-                        <select name="listing_type" id="listing-type-listings">
-                            <option value=""><?php echo $lang == 'tr' ? 'Tümü' : 'All'; ?></option>
-                            <option value="satilik" <?php echo $listing_type == 'satilik' ? 'selected' : ''; ?>><?php echo t('for_sale'); ?></option>
-                            <option value="kiralik" <?php echo $listing_type == 'kiralik' ? 'selected' : ''; ?>><?php echo t('for_rent'); ?></option>
-                        </select>
-                    </div>
-                    
-                    <div class="filter-group">
-                        <label><?php echo t('property_type'); ?></label>
-                        <select name="property_type" id="property-type-listings">
-                            <option value="all"><?php echo t('all'); ?></option>
-                            <option value="ev" <?php echo $property_type == 'ev' ? 'selected' : ''; ?>><?php echo t('house'); ?></option>
-                            <option value="daire" <?php echo $property_type == 'daire' ? 'selected' : ''; ?>><?php echo t('apartment'); ?></option>
-                            <option value="arsa" <?php echo $property_type == 'arsa' ? 'selected' : ''; ?> data-hide-for-rent="true"><?php echo t('land'); ?></option>
-                            <option value="tarla" <?php echo $property_type == 'tarla' ? 'selected' : ''; ?> data-hide-for-rent="true"><?php echo t('tarla'); ?></option>
-                            <option value="dukkan" <?php echo $property_type == 'dukkan' ? 'selected' : ''; ?>><?php echo t('shop'); ?></option>
-                            <option value="villa" <?php echo $property_type == 'villa' ? 'selected' : ''; ?>><?php echo t('villa'); ?></option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label><?php echo t('price'); ?> (Min)</label>
-                        <input type="number" name="min_price" value="<?php echo htmlspecialchars($min_price); ?>" placeholder="0">
-                    </div>
-
-                    <div class="filter-group">
-                        <label><?php echo t('price'); ?> (Max)</label>
-                        <input type="number" name="max_price" value="<?php echo htmlspecialchars($max_price); ?>" placeholder="999999999">
-                    </div>
-
-                    <div class="filter-group">
-                        <label><?php echo t('city'); ?></label>
-                        <select name="city" id="city-select">
-                            <option value=""><?php echo $lang == 'tr' ? 'Şehir Seçiniz' : 'Select City'; ?></option>
-                            <?php foreach ($cities as $city_option): ?>
-                                <option value="<?php echo htmlspecialchars($city_option['il_adi']); ?>" 
-                                    <?php echo $city == $city_option['il_adi'] ? 'selected' : ''; ?>
-                                    data-id="<?php echo $city_option['id']; ?>">
-                                    <?php echo htmlspecialchars($city_option['il_adi']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label><?php echo t('district'); ?></label>
-                        <select name="district" id="district-select">
-                            <option value=""><?php echo $lang == 'tr' ? 'İlçe Seçiniz' : 'Select District'; ?></option>
-                            <?php foreach ($districts as $district_option): ?>
-                                <option value="<?php echo htmlspecialchars($district_option['ilce_adi']); ?>" 
-                                    <?php echo $district == $district_option['ilce_adi'] ? 'selected' : ''; ?>
-                                    data-id="<?php echo $district_option['id']; ?>">
-                                    <?php echo htmlspecialchars($district_option['ilce_adi']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label><?php echo $lang == 'tr' ? 'Mahalle' : 'Neighborhood'; ?></label>
-                        <select name="mahalle" id="mahalle-select">
-                            <option value=""><?php echo $lang == 'tr' ? 'Mahalle Seçiniz' : 'Select Neighborhood'; ?></option>
-                            <?php foreach ($neighborhoods as $neighborhood_option): ?>
-                                <option value="<?php echo htmlspecialchars($neighborhood_option['mahalle_adi']); ?>" 
-                                    <?php echo $mahalle == $neighborhood_option['mahalle_adi'] ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($neighborhood_option['mahalle_adi']); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <label><?php echo $lang == 'tr' ? 'Kimden' : 'From'; ?></label>
-                        <select name="owner_type">
-                            <option value=""><?php echo $lang == 'tr' ? 'Tümü' : 'All'; ?></option>
-                            <option value="emlakci" <?php echo $owner_type_filter == 'emlakci' ? 'selected' : ''; ?>><?php echo $lang == 'tr' ? 'Emlakçıdan' : 'Agency'; ?></option>
-                            <option value="bireysel" <?php echo $owner_type_filter == 'bireysel' ? 'selected' : ''; ?>><?php echo $lang == 'tr' ? 'Sahibinden' : 'By Owner'; ?></option>
-                        </select>
-                    </div>
-
-                    <div class="filter-group">
-                        <button type="submit" class="btn btn-primary"><?php echo t('filter'); ?></button>
-                        <a href="ilanlar" class="btn btn-secondary"><?php echo $lang == 'tr' ? 'Temizle' : 'Clear'; ?></a>
-                    </div>
-                </form>
+        <section class="subpage-header">
+            <div class="container">
+                <h1><?php echo t('listings'); ?></h1>
+                <p style="opacity: 0.8;"><?php echo count($listings); ?> <?php echo $lang == 'tr' ? 'aktif ilan listeleniyor' : 'active listings found'; ?></p>
             </div>
+        </section>
 
-            <!-- İlanlar -->
-            <div class="listings-grid">
-                <?php if (empty($listings)): ?>
-                    <p class="no-results"><?php echo t('no_listings'); ?></p>
-                <?php else: ?>
-                    <?php foreach ($listings as $listing): ?>
-                        <div class="listing-card">
-                            <?php 
-                            // Yeni SEO-friendly URL formatı
-                            if (!empty($listing['slug'])) {
-                                $listing_type = !empty($listing['listing_type']) ? $listing['listing_type'] : 'satilik';
-                                $listing_type = strtolower(trim($listing_type));
-                                
-                                $property_type_slug = !empty($listing['property_type']) ? $listing['property_type'] : 'konut';
-                                $property_type_slug = strtolower(trim($property_type_slug));
-                                
-                                // Şehir adını URL-friendly hale getir
-                                $city_raw = !empty($listing['city']) ? $listing['city'] : 'turkiye';
-                                $city = mb_strtolower($city_raw, 'UTF-8');
-                                $city = str_replace(['ı', 'ğ', 'ü', 'ş', 'ö', 'ç'], ['i', 'g', 'u', 's', 'o', 'c'], $city);
-                                $city = preg_replace('/[^a-z0-9]+/', '-', $city);
-                                $city = trim($city, '-');
-                                
-                                $url = '/detay/' . $listing_type . '/' . $property_type_slug . '/' . $city . '/' . $listing['slug'];
-                            } else {
-                                $url = '/ilan.php?id=' . $listing['id'];
-                            }
-                            ?>
-                            <a href="<?php echo $url; ?>" class="listing-image-link">
-                                <div class="owner-type-badge <?php echo $listing['owner_type'] ?? 'admin'; ?>" style="position: absolute; bottom: 10px; left: 10px; background: rgba(15,18,61,0.8); color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; z-index: 5;">
-                                    <?php if (($listing['owner_type'] ?? 'admin') === 'emlakci'): ?>
-                                        <i class="fas fa-building"></i> <?php echo $lang == 'tr' ? 'Emlakçıdan' : 'Agency'; ?>
-                                    <?php elseif (($listing['owner_type'] ?? 'admin') === 'bireysel'): ?>
-                                        <i class="fas fa-user"></i> <?php echo $lang == 'tr' ? 'Sahibinden' : 'By Owner'; ?>
-                                    <?php else: ?>
-                                        <i class="fas fa-check-circle"></i> Emlaxia
-                                    <?php endif; ?>
-                                </div>
-                                <button class="btn-favorite <?php echo in_array($listing['id'], $user_favs) ? 'active' : ''; ?>" data-id="<?php echo $listing['id']; ?>">
-                                    <i class="<?php echo in_array($listing['id'], $user_favs) ? 'fas' : 'far'; ?> fa-heart"></i>
-                                </button>
-                                <?php if ($listing['image1']): ?>
-                                    <img src="/uploads/<?php echo htmlspecialchars($listing['image1']); ?>" alt="<?php echo htmlspecialchars($listing['title_' . $lang]); ?>">
-                                <?php else: ?>
-                                    <img src="/assets/images/placeholder.jpg" alt="No Image">
-                                <?php endif; ?>
-                            </a>
-                            <div class="listing-info">
-                                <span class="property-type"><?php echo t($listing['property_type']); ?></span>
-                                <?php $listing_title = !empty($listing['title_' . $lang]) ? $listing['title_' . $lang] : t('property'); ?>
-                                <h3><a href="<?php echo $url; ?>" class="listing-title-link"><?php echo htmlspecialchars($listing_title); ?></a></h3>
-                                <p class="price"><?php echo number_format($listing['price'], 2, ',', '.'); ?> <?php echo t('currency'); ?></p>
-                                <?php if ($listing['area']): ?>
-                                    <p class="area"><?php echo t('area'); ?>: <?php echo $listing['area']; ?> m²</p>
-                                <?php endif; ?>
-                                <?php if ($listing['rooms']): ?>
-                                    <p class="rooms"><?php echo t('rooms'); ?>: <?php echo $listing['rooms']; ?></p>
-                                <?php endif; ?>
-                                <?php if ($listing['city']): ?>
-                                    <p class="location"><i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($listing['city']); ?><?php echo $listing['district'] ? ', ' . htmlspecialchars($listing['district']) : ''; ?></p>
-                                <?php endif; ?>
-                                <a href="<?php echo $url; ?>" class="btn btn-secondary"><?php echo t('details'); ?></a>
+        <div class="container" style="padding-bottom: 100px;">
+            <div class="listings-container">
+                <!-- Sidebar Filter -->
+                <aside class="filter-sidebar-premium">
+                    <h2><i class="fas fa-filter"></i> <?php echo t('filter'); ?></h2>
+                    <form method="GET" action="ilanlar" class="filter-form-modern">
+                        <div class="filter-group-premium">
+                            <label><?php echo t('listing_type'); ?></label>
+                            <select name="listing_type" id="listing-type-listings" class="filter-input-premium">
+                                <option value=""><?php echo $lang == 'tr' ? 'Tümü' : 'All'; ?></option>
+                                <option value="satilik" <?php echo $listing_type == 'satilik' ? 'selected' : ''; ?>><?php echo t('for_sale'); ?></option>
+                                <option value="kiralik" <?php echo $listing_type == 'kiralik' ? 'selected' : ''; ?>><?php echo t('for_rent'); ?></option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group-premium">
+                            <label><?php echo t('property_type'); ?></label>
+                            <select name="property_type" id="property-type-listings" class="filter-input-premium">
+                                <option value="all"><?php echo t('all'); ?></option>
+                                <option value="ev" <?php echo $property_type == 'ev' ? 'selected' : ''; ?>><?php echo t('house'); ?></option>
+                                <option value="daire" <?php echo $property_type == 'daire' ? 'selected' : ''; ?>><?php echo t('apartment'); ?></option>
+                                <option value="arsa" <?php echo $property_type == 'arsa' ? 'selected' : ''; ?> data-hide-for-rent="true"><?php echo t('land'); ?></option>
+                                <option value="tarla" <?php echo $property_type == 'tarla' ? 'selected' : ''; ?> data-hide-for-rent="true"><?php echo t('tarla'); ?></option>
+                                <option value="dukkan" <?php echo $property_type == 'dukkan' ? 'selected' : ''; ?>><?php echo t('shop'); ?></option>
+                                <option value="villa" <?php echo $property_type == 'villa' ? 'selected' : ''; ?>><?php echo t('villa'); ?></option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group-premium">
+                            <label><?php echo t('price'); ?> (Min/Max)</label>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="number" name="min_price" value="<?php echo htmlspecialchars($min_price); ?>" class="filter-input-premium" placeholder="Min">
+                                <input type="number" name="max_price" value="<?php echo htmlspecialchars($max_price); ?>" class="filter-input-premium" placeholder="Max">
                             </div>
                         </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+
+                        <div class="filter-group-premium">
+                            <label><?php echo t('city'); ?></label>
+                            <select name="city" id="city-select" class="filter-input-premium">
+                                <option value=""><?php echo $lang == 'tr' ? 'Şehir Seçiniz' : 'Select City'; ?></option>
+                                <?php foreach ($cities as $city_option): ?>
+                                    <option value="<?php echo htmlspecialchars($city_option['il_adi']); ?>" 
+                                        <?php echo $city == $city_option['il_adi'] ? 'selected' : ''; ?>
+                                        data-id="<?php echo $city_option['id']; ?>">
+                                        <?php echo htmlspecialchars($city_option['il_adi']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="filter-group-premium">
+                            <label><?php echo t('district'); ?></label>
+                            <select name="district" id="district-select" class="filter-input-premium">
+                                <option value=""><?php echo $lang == 'tr' ? 'İlçe Seçiniz' : 'Select District'; ?></option>
+                                <?php foreach ($districts as $district_option): ?>
+                                    <option value="<?php echo htmlspecialchars($district_option['ilce_adi']); ?>" 
+                                        <?php echo $district == $district_option['ilce_adi'] ? 'selected' : ''; ?>
+                                        data-id="<?php echo $district_option['id']; ?>">
+                                        <?php echo htmlspecialchars($district_option['ilce_adi']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="filter-group-premium">
+                            <label><?php echo $lang == 'tr' ? 'Kimden' : 'From'; ?></label>
+                            <select name="owner_type" class="filter-input-premium">
+                                <option value=""><?php echo $lang == 'tr' ? 'Tümü' : 'All'; ?></option>
+                                <option value="emlakci" <?php echo $owner_type_filter == 'emlakci' ? 'selected' : ''; ?>><?php echo $lang == 'tr' ? 'Emlakçıdan' : 'Agency'; ?></option>
+                                <option value="bireysel" <?php echo $owner_type_filter == 'bireysel' ? 'selected' : ''; ?>><?php echo $lang == 'tr' ? 'Sahibinden' : 'By Owner'; ?></option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn-filter-apply"><?php echo t('filter'); ?></button>
+                        <a href="ilanlar" class="btn-filter-clear"><?php echo $lang == 'tr' ? 'Temizle' : 'Clear Filters'; ?></a>
+                    </form>
+                </aside>
+
+                <!-- Listings Grid -->
+                <div class="listings-grid-wrapper">
+                    <div class="listings-grid" style="margin-top: 0;">
+                        <?php if (empty($listings)): ?>
+                            <div style="background: white; padding: 60px; border-radius: 24px; text-align: center; box-shadow: var(--premium-shadow-soft);">
+                                <i class="fas fa-search" style="font-size: 3rem; color: #EEE; margin-bottom: 20px;"></i>
+                                <p class="no-results"><?php echo t('no_listings'); ?></p>
+                                <a href="ilanlar" style="color: var(--premium-gold); font-weight: 700;"><?php echo $lang == 'tr' ? 'Tüm İlanları Gör' : 'View All Listings'; ?></a>
+                            </div>
+                        <?php else: ?>
+                            <?php foreach ($listings as $listing): ?>
+                                <?php 
+                                    if (!empty($listing['slug'])) {
+                                        $l_type = !empty($listing['listing_type']) ? $listing['listing_type'] : 'satilik';
+                                        $p_type_slug = !empty($listing['property_type']) ? $listing['property_type'] : 'konut';
+                                        
+                                        $city_raw = !empty($listing['city']) ? $listing['city'] : 'turkiye';
+                                        $city_slug = mb_strtolower($city_raw, 'UTF-8');
+                                        $city_slug = str_replace(['ı', 'ğ', 'ü', 'ş', 'ö', 'ç'], ['i', 'g', 'u', 's', 'o', 'c'], $city_slug);
+                                        $city_slug = preg_replace('/[^a-z0-9]+/', '-', $city_slug);
+                                        $city_slug = trim($city_slug, '-');
+                                        
+                                        $url = '/detay/' . $l_type . '/' . $p_type_slug . '/' . $city_slug . '/' . $listing['slug'];
+                                    } else {
+                                        $url = '/ilan.php?id=' . $listing['id'];
+                                    }
+                                    $listing_title = !empty($listing['title_' . $lang]) ? $listing['title_' . $lang] : t('property');
+                                ?>
+                                <div class="listing-card-premium">
+                                    <div class="image-container">
+                                        <a href="<?php echo $url; ?>">
+                                            <img src="<?php echo !empty($listing['image1']) ? '/uploads/' . $listing['image1'] : '/assets/images/placeholder.jpg'; ?>" alt="<?php echo htmlspecialchars($listing_title); ?>">
+                                        </a>
+                                        <div class="badge-premium"><?php echo t($listing['property_type']); ?></div>
+                                        <div class="price-tag"><?php echo number_format($listing['price'], 0, ',', '.'); ?> <?php echo t('currency'); ?></div>
+                                        
+                                        <button class="btn-favorite-premium <?php echo in_array($listing['id'], $user_favs) ? 'active' : ''; ?>" data-id="<?php echo $listing['id']; ?>" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; border: 1px solid rgba(255,255,255,0.3); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
+                                            <i class="<?php echo in_array($listing['id'], $user_favs) ? 'fas' : 'far'; ?> fa-heart"></i>
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="location-premium">
+                                            <i class="fas fa-map-marker-alt"></i> <?php echo htmlspecialchars($listing['city']); ?> / <?php echo htmlspecialchars($listing['district']); ?>
+                                        </div>
+                                        <h3 class="card-title" style="margin-bottom: 12px; height: auto;">
+                                            <a href="<?php echo $url; ?>" style="color: inherit; text-decoration: none;"><?php echo htmlspecialchars($listing_title); ?></a>
+                                        </h3>
+                                        <div class="feature-pill-group">
+                                            <?php if ($listing['area']): ?>
+                                                <div class="feature-pill"><i class="fas fa-vector-square"></i> <?php echo $listing['area']; ?> m²</div>
+                                            <?php endif; ?>
+                                            <?php if ($listing['rooms']): ?>
+                                                <div class="feature-pill"><i class="fas fa-bed"></i> <?php echo $listing['rooms']; ?></div>
+                                            <?php endif; ?>
+                                        </div>
+                                        
+                                        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 15px; border-top: 1px solid #F5F5F5;">
+                                            <span style="font-size: 0.75rem; color: var(--premium-text-muted); font-weight: 600;">
+                                                <?php if (($listing['owner_type'] ?? 'admin') === 'emlakci'): ?>
+                                                    <i class="fas fa-building"></i> <?php echo htmlspecialchars($listing['firma_adi'] ?: t('agency')); ?>
+                                                <?php else: ?>
+                                                    <i class="fas fa-user"></i> <?php echo $lang == 'tr' ? 'Sahibinden' : 'By Owner'; ?>
+                                                <?php endif; ?>
+                                            </span>
+                                            <a href="<?php echo $url; ?>" style="color: var(--premium-navy); font-weight: 800; text-decoration: none; font-size: 0.85rem;">
+                                                <?php echo $lang == 'tr' ? 'DETAY' : 'DETAILS'; ?> <i class="fas fa-arrow-right" style="font-size: 0.7rem;"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
-
 
     <?php include 'includes/footer.php'; ?>
     <script src="/assets/js/main.js"></script>
     <script src="/assets/js/location-filter.js"></script>
     <script>
-        // Listings page - filter property types based on listing type
+        // Filter property types based on listing type
         const listingTypeListings = document.getElementById('listing-type-listings');
         const propertyTypeListings = document.getElementById('property-type-listings');
         
@@ -322,7 +321,37 @@ if ($district) {
             listingTypeListings.addEventListener('change', filterListingsPropertyTypes);
             filterListingsPropertyTypes();
         }
+
+        // Favoriye ekleme işlemi
+        document.querySelectorAll('.btn-favorite-premium').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const listingId = this.dataset.id;
+                const icon = this.querySelector('i');
+                
+                fetch('/api/favorite.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'listing_id=' + listingId
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        if (data.action === 'added') {
+                            icon.classList.remove('far');
+                            icon.classList.add('fas');
+                            this.classList.add('active');
+                        } else {
+                            icon.classList.remove('fas');
+                            icon.classList.add('far');
+                            this.classList.remove('active');
+                        }
+                    } else if (data.status === 'error' && data.message === 'login_required') {
+                        window.location.href = '/giris';
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
-
