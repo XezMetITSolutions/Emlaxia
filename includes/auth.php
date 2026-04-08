@@ -75,10 +75,13 @@ function registerUser($pdo, $data)
     $message .= $activationLink . "\n\n";
     $message .= "Emlaxia Ekibi";
     
-    $headers = "From: no-reply@emlaxia.com\r\n";
+    $headers = "From: Emlaxia <no-reply@emlaxia.com>\r\n";
+    $headers .= "Reply-To: no-reply@emlaxia.com\r\n";
+    $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "Content-Type: text/plain; charset=utf-8\r\n";
+    $headers .= "X-Mailer: PHP/" . phpversion();
     
-    @mail($data['email'], $subject, $message, $headers);
+    mail($data['email'], $subject, $message, $headers);
 
     return ['success' => true, 'message' => 'Kayıt başarılı! Lütfen e-posta adresinize gönderilen aktivasyon linkine tıklayınız.'];
 }

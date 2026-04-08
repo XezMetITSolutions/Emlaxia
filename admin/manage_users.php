@@ -19,8 +19,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     if ($uid && in_array($action, ['activate', 'suspend', 'reject', 'delete'])) {
         if ($action === 'activate') {
-            $pdo->prepare("UPDATE users SET status = 'active' WHERE id = :id")->execute([':id' => $uid]);
-            $_SESSION['success_message'] = 'Kullanıcı aktifleştirildi.';
+            $pdo->prepare("UPDATE users SET status = 'active', email_verified = 1 WHERE id = :id")->execute([':id' => $uid]);
+            $_SESSION['success_message'] = 'Kullanıcı aktifleştirildi ve e-postası doğrulandı.';
         } elseif ($action === 'suspend') {
             $pdo->prepare("UPDATE users SET status = 'suspended' WHERE id = :id")->execute([':id' => $uid]);
             $_SESSION['success_message'] = 'Kullanıcı askıya alındı.';
@@ -351,6 +351,7 @@ try {
                             <th>İlan</th>
                             <th>Durum</th>
                             <th>E-Posta Onay</th>
+                            <th>Aktivasyon Linki</th>
                             <th>Kayıt</th>
                             <th>İşlem</th>
                         </tr>
@@ -385,6 +386,21 @@ try {
                                     </span>
                                 </td>
                                 <td>
+                                    <?php if (!$u['email_verified'] && !empty($u['activation_token'])): ?>
+                                        <?php 
+                                            $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+                                            $host = $_SERVER['HTTP_HOST'];
+                                            $link = "$protocol://$host/verify.php?token=" . $u['activation_token'];
+                                        ?>
+                                        <div style="display:flex; gap:5px; align-items:center;">
+                                            <a href="<?php echo $link; ?>" target="_blank" class="btn-sm" style="background:#e0f2fe; color:#0369a1; text-decoration:none;">Aç</a>
+                                            <button onclick="copyToClipboard('<?php echo $link; ?>')" class="btn-sm" style="background:#f1f5f9; color:#475569; border:1px solid #e2e8f0;">Kopyala</button>
+                                        </div>
+                                    <?php else: ?>
+                                        <span style="color:#94a3b8;">-</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
                                     <?php echo date('d.m.Y', strtotime($u['created_at'])); ?>
                                 </td>
                                 <td>
@@ -415,6 +431,16 @@ try {
             <?php endif; ?>
         </div>
     </div>
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Link kopyalandı!');
+            }).catch(err => {
+                console.error('Hata:', err);
+                alert('Kopyalanamadı.');
+            });
+        }
+    </script>
 </body>
 
 </html>
