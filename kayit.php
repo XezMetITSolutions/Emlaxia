@@ -1,6 +1,6 @@
 <?php
 /**
- * Kayıt Sayfası - Emlakçı ve Bireysel
+ * Kayıt Sayfası - Emlakçı ve Bireysel (Tüm Üyelik İşlemleri)
  */
 ob_start();
 require_once 'config.php';
@@ -8,24 +8,23 @@ require_once 'includes/auth.php';
 
 // Zaten giriş yapılmışsa yönlendir
 if (checkUserAuth()) {
-    $redirect = '/uye/dashboard';
+    $redirect = $_SESSION['user_type'] === 'emlakci' ? '/emlakci/dashboard' : '/bireysel/dashboard';
     header('Location: ' . $redirect);
     exit;
 }
 
-
-
-
-
-
+// Pre-select type from URL (e.g. kayit?type=emlakci)
+$preselect_type = $_GET['type'] ?? '';
+$form_data = [];
+if (in_array($preselect_type, ['emlakci', 'bireysel'])) {
+    $form_data['user_type'] = $preselect_type;
+}
 
 $error = '';
 $success = '';
-$form_data = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $form_data = $_POST;
-    $form_data['user_type'] = 'uye'; // Normal üye
 
     // Şifre eşleşme kontrolü
     if (($form_data['password'] ?? '') !== ($form_data['password_confirm'] ?? '')) {
@@ -88,7 +87,7 @@ $csrf_token = generateCsrfToken();
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #1e88e5, #43a047, #1e88e5);
+            background: linear-gradient(90deg, #D3AF37, #FFD700, #D3AF37);
         }
 
         .register-logo {
@@ -108,7 +107,51 @@ $csrf_token = generateCsrfToken();
             font-size: 0.95rem;
         }
 
+        .user-type-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
 
+        .type-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .type-card:hover {
+            border-color: #D3AF37;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(211, 175, 55, 0.15);
+        }
+
+        .type-card.active {
+            border-color: #D3AF37;
+            background: linear-gradient(135deg, rgba(211, 175, 55, 0.05), rgba(211, 175, 55, 0.1));
+            box-shadow: 0 0 0 3px rgba(211, 175, 55, 0.2);
+        }
+
+        .type-card .type-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .type-card .type-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+
+        .type-card .type-desc {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
 
         .form-row {
             display: grid;
@@ -143,31 +186,64 @@ $csrf_token = generateCsrfToken();
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #1e88e5;
+            border-color: #D3AF37;
             background: white;
-            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+            box-shadow: 0 0 0 3px rgba(211, 175, 55, 0.1);
         }
 
+        .emlakci-fields {
+            display: none;
+            background: rgba(211, 175, 55, 0.05);
+            border: 1px solid rgba(211, 175, 55, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
 
+        .emlakci-fields.visible {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .emlakci-fields h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #A6892A;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
         .btn-register {
             width: 100%;
             padding: 1rem;
-            background: linear-gradient(135deg, #1e88e5, #1565c0);
-            color: white;
+            background: linear-gradient(135deg, #D3AF37, #A6892A);
+            color: #0F123D;
             border: none;
             border-radius: 12px;
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
             margin-top: 0.5rem;
         }
 
         .btn-register:hover {
-            background: linear-gradient(135deg, #1565c0, #0d47a1);
             transform: translateY(-1px);
-            box-shadow: 0 8px 25px rgba(30, 136, 229, 0.3);
+            box-shadow: 0 8px 25px rgba(211, 175, 55, 0.4);
         }
 
         .alert {
@@ -198,7 +274,7 @@ $csrf_token = generateCsrfToken();
         }
 
         .login-link a {
-            color: #1e88e5;
+            color: #D3AF37;
             font-weight: 600;
             text-decoration: none;
         }
@@ -223,11 +299,6 @@ $csrf_token = generateCsrfToken();
             .user-type-selector {
                 grid-template-columns: 1fr;
             }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -256,7 +327,32 @@ $csrf_token = generateCsrfToken();
 
             <form method="POST" action="/kayit" id="registerForm">
                 <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
-                <input type="hidden" name="user_type" id="user_type_hidden" value="uye">
+                <input type="hidden" name="user_type" id="user_type"
+                    value="<?php echo htmlspecialchars($form_data['user_type'] ?? ''); ?>">
+
+                <!-- Kullanıcı Tipi Seçimi -->
+                <div class="user-type-selector">
+                    <div class="type-card <?php echo ($form_data['user_type'] ?? '') === 'bireysel' ? 'active' : ''; ?>"
+                        onclick="selectType('bireysel')">
+                        <div class="type-icon" style="color: #3b82f6;"><i class="fas fa-user"></i></div>
+                        <div class="type-title">
+                            <?php echo $lang === 'tr' ? 'Bireysel' : 'Individual'; ?>
+                        </div>
+                        <div class="type-desc">
+                            <?php echo $lang === 'tr' ? 'ilan görüntüleme ve ekleme' : 'View and add listings'; ?>
+                        </div>
+                    </div>
+                    <div class="type-card <?php echo ($form_data['user_type'] ?? '') === 'emlakci' ? 'active' : ''; ?>"
+                        onclick="selectType('emlakci')">
+                        <div class="type-icon" style="color: #f59e0b;"><i class="fas fa-building"></i></div>
+                        <div class="type-title">
+                            <?php echo $lang === 'tr' ? 'Emlakçı' : 'Real Estate Agent'; ?>
+                        </div>
+                        <div class="type-desc">
+                            <?php echo $lang === 'tr' ? 'Emlak ofisi olarak ilan verin' : 'Post as an office'; ?>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Temel Bilgiler -->
                 <div class="form-row">
@@ -314,10 +410,50 @@ $csrf_token = generateCsrfToken();
                     </div>
                 </div>
 
+                <!-- Emlakçı Ek Alanları -->
+                <div class="emlakci-fields <?php echo ($form_data['user_type'] ?? '') === 'emlakci' ? 'visible' : ''; ?>"
+                    id="emlakciFields">
+                    <h3><i class="fas fa-building"></i>
+                        <?php echo $lang === 'tr' ? 'Emlak Ofisi Bilgileri' : 'Real Estate Office Information'; ?>
+                    </h3>
+                    <div class="form-group">
+                        <label>
+                            <?php echo $lang === 'tr' ? 'Firma Adı' : 'Company Name'; ?> <span
+                                class="required-star">*</span>
+                        </label>
+                        <input type="text" name="firma_adi"
+                            value="<?php echo htmlspecialchars($form_data['firma_adi'] ?? ''); ?>"
+                            placeholder="<?php echo $lang === 'tr' ? 'Emlak ofisi adınız' : 'Your office name'; ?>">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                <?php echo $lang === 'tr' ? 'Vergi Numarası' : 'Tax Number'; ?>
+                            </label>
+                            <input type="text" name="vergi_no"
+                                value="<?php echo htmlspecialchars($form_data['vergi_no'] ?? ''); ?>"
+                                placeholder="1234567890">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <?php echo $lang === 'tr' ? 'Lisans Numarası' : 'License Number'; ?>
+                            </label>
+                            <input type="text" name="lisans_no"
+                                value="<?php echo htmlspecialchars($form_data['lisans_no'] ?? ''); ?>"
+                                placeholder="EM-12345">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <?php echo $lang === 'tr' ? 'Ofis Adresi' : 'Office Address'; ?>
+                        </label>
+                        <textarea name="ofis_adresi" rows="2"
+                            placeholder="<?php echo $lang === 'tr' ? 'Ofisinizin tam adresi' : 'Full office address'; ?>"><?php echo htmlspecialchars($form_data['ofis_adresi'] ?? ''); ?></textarea>
+                    </div>
+                </div>
 
-
-                <button type="submit" class="btn-register" id="submitBtn">
-                    <?php echo $lang === 'tr' ? 'Hemen Üye Ol' : 'Register Now'; ?>
+                <button type="submit" class="btn-register" id="submitBtn" disabled>
+                    <?php echo $lang === 'tr' ? 'Kayıt Ol' : 'Register'; ?>
                 </button>
             </form>
 
@@ -336,8 +472,36 @@ $csrf_token = generateCsrfToken();
         </div>
     </div>
 
+    <script>
+        function selectType(type) {
+            document.getElementById('user_type').value = type;
 
+            // Card'ları güncelle
+            document.querySelectorAll('.type-card').forEach(card => card.classList.remove('active'));
+            // Use event currentTarget to handle click correctly
+            if (event) {
+                event.currentTarget.classList.add('active');
+            }
 
+            // Emlakçı alanlarını göster/gizle
+            const emlakciFields = document.getElementById('emlakciFields');
+            if (type === 'emlakci') {
+                emlakciFields.classList.add('visible');
+            } else {
+                emlakciFields.classList.remove('visible');
+            }
+
+            // Submit butonunu aktifle
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        // Sayfa yüklendiğinde, eğer tip seçiliyse butonu aktifle
+        window.addEventListener('load', function() {
+            if (document.getElementById('user_type').value) {
+                document.getElementById('submitBtn').disabled = false;
+            }
+        });
+    </script>
 </body>
 
 </html>

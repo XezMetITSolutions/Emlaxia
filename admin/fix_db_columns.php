@@ -11,9 +11,9 @@ try {
         echo "ℹ️ 'activation_token' kolonu zaten mevcut.<br>";
     }
 
-    // user_type ENUM güncelle
-    $pdo->exec("ALTER TABLE users MODIFY COLUMN user_type ENUM('emlakci', 'bireysel', 'uye') NOT NULL");
-    echo "✅ 'user_type' ENUM başarıyla güncellendi (uye eklendi).<br>";
+    // user_type ENUM güncelle (uye kaldırıldı)
+    $pdo->exec("ALTER TABLE users MODIFY COLUMN user_type ENUM('emlakci', 'bireysel') NOT NULL");
+    echo "✅ 'user_type' ENUM başarıyla güncellendi (uye kaldırıldı).<br>";
 
     echo "<h1>Veritabanı Düzeltme Tamamlandı</h1>";
 } catch (Exception $e) {

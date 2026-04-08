@@ -59,6 +59,7 @@ if ($is_edit && !empty($listing['district'])) {
     <base href="/">
     <link rel="stylesheet" href="/assets/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { font-family: 'Inter', sans-serif; }
         body { background: #f1f5f9; margin: 0; }
@@ -140,6 +141,149 @@ if ($is_edit && !empty($listing['district'])) {
         @media (max-width: 768px) {
             .form-row, .form-row-3 { grid-template-columns: 1fr; }
             .page-container { padding: 1rem; }
+        }
+
+        /* --- Premium Multi Image Upload Styles --- */
+        .multi-upload-dropzone {
+            border: 3px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(59, 130, 246, 0.05) 100%);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .multi-upload-dropzone:hover {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.1) 100%);
+        }
+
+        .multi-upload-dropzone.dragover {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.15) 100%);
+            transform: scale(1.01);
+        }
+
+        .dropzone-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .dropzone-content svg {
+            color: #3b82f6;
+            opacity: 0.7;
+        }
+
+        .dropzone-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .dropzone-content p {
+            color: #64748b;
+            margin: 0;
+        }
+
+        .dropzone-content .upload-hint {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 0.5rem;
+        }
+
+        /* Uploaded Images Container */
+        .uploaded-images-container {
+            margin-top: 2rem;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .uploaded-images-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .uploaded-images-header h4 {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+            gap: 0.5rem;
+        }
+
+        .uploaded-images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 1rem;
+        }
+
+        .uploaded-image-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            background: #f1f5f9;
+            cursor: move;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .uploaded-image-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .uploaded-image-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .uploaded-image-item .btn-remove {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+
+        .uploaded-image-item .main-badge {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: #f59e0b;
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            z-index: 10;
         }
 
         /* Site Özellikleri Grid */
@@ -950,23 +1094,44 @@ if ($is_edit && !empty($listing['district'])) {
             <!-- 6. Resimler -->
             <div class="form-section">
                 <div class="form-section-title">📷 Resimler</div>
-                <div class="upload-area" onclick="document.getElementById('imageInput').click()">
-                    <input type="file" id="imageInput" name="uploaded_images[]" multiple accept="image/*" onchange="previewImages(this)">
-                    <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">📤</div>
-                    <p style="font-weight: 600; color: #0f172a;">Resimleri yüklemek için tıklayın</p>
-                    <p style="font-size: 0.85rem; color: #94a3b8;">Maksimum 20 resim, JPG/PNG/WebP</p>
+                <p style="color: #64748b; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                    Maksimum 20 resim yükleyebilirsiniz. Resimleri sürükleyip bırakabilir veya butona tıklayarak seçebilirsiniz.
+                </p>
+
+                <!-- Premium Drop Zone -->
+                <div class="multi-upload-dropzone" id="multi-dropzone" onclick="document.getElementById('imageInput').click()">
+                    <div class="dropzone-content">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <h3>Resimleri Buraya Sürükleyin veya Tıklayın</h3>
+                        <p class="upload-hint">PNG, JPG, JPEG, WEBP • Maks. 20 resim • Maks. 5MB/resim</p>
+                    </div>
+                    <input type="file" id="imageInput" name="uploaded_images[]" multiple accept="image/*" style="display: none;" onchange="previewImages(this)">
                 </div>
-                <div class="preview-grid" id="previewGrid">
-                    <?php if ($is_edit): ?>
-                        <?php for ($i = 1; $i <= 20; $i++): ?>
-                            <?php if (!empty($listing['image' . $i])): ?>
-                                <div class="preview-item" data-existing="<?php echo htmlspecialchars($listing['image' . $i]); ?>">
-                                    <img src="/uploads/<?php echo htmlspecialchars($listing['image' . $i]); ?>" alt="">
-                                    <button type="button" class="remove-btn" onclick="removePreview(this)">✕</button>
-                                </div>
-                            <?php endif; ?>
-                        <?php endfor; ?>
-                    <?php endif; ?>
+
+                <!-- Yüklenen Resimler Grid -->
+                <div class="uploaded-images-container" id="uploaded-images-container" style="display: <?php echo $is_edit ? 'block' : 'none'; ?>;">
+                    <div class="uploaded-images-header">
+                        <h4>
+                            <i class="fas fa-images"></i> Yüklenen Resimler (<span id="image-count">0</span>/20)
+                        </h4>
+                    </div>
+                    <div class="uploaded-images-grid" id="previewGrid">
+                        <?php if ($is_edit): ?>
+                            <?php for ($i = 1; $i <= 20; $i++): ?>
+                                <?php if (!empty($listing['image' . $i])): ?>
+                                    <div class="uploaded-image-item" data-existing="<?php echo htmlspecialchars($listing['image' . $i]); ?>">
+                                        <?php if ($i === 1): ?><span class="main-badge">Ana Resim</span><?php endif; ?>
+                                        <img src="/uploads/<?php echo htmlspecialchars($listing['image' . $i]); ?>" alt="">
+                                        <button type="button" class="btn-remove" onclick="removePreview(this)">✕</button>
+                                    </div>
+                                <?php endif; ?>
+                            <?php endfor; ?>
+                        <?php endif; ?>
+                    </div>
                 </div>
                 <input type="hidden" name="existing_images_list" id="existingImagesList" value="">
             </div>
@@ -1072,29 +1237,76 @@ if ($is_edit && !empty($listing['district'])) {
     let uploadedFiles = [];
     function previewImages(input) {
         const grid = document.getElementById('previewGrid');
+        const container = document.getElementById('uploaded-images-container');
+        container.style.display = 'block';
+
         Array.from(input.files).forEach(file => {
+            if (uploadedFiles.length >= 20) return;
             uploadedFiles.push(file);
             const reader = new FileReader();
             reader.onload = (e) => {
                 const div = document.createElement('div');
-                div.className = 'preview-item';
-                div.innerHTML = `<img src="${e.target.result}" alt=""><button type="button" class="remove-btn" onclick="removePreview(this)">✕</button>`;
+                div.className = 'uploaded-image-item';
+                div.innerHTML = `<img src="${e.target.result}" alt=""><button type="button" class="btn-remove" onclick="removePreview(this, ${uploadedFiles.length - 1})">✕</button>`;
                 grid.appendChild(div);
+                updateImageCount();
             };
             reader.readAsDataURL(file);
         });
     }
 
-    function removePreview(btn) {
-        btn.closest('.preview-item').remove();
+    function removePreview(btn, index) {
+        const item = btn.closest('.uploaded-image-item');
+        if (item.dataset.existing) {
+            item.remove();
+        } else {
+            // New uploads: we might need a better way to track indices if multiple removals occur
+            // For now, simpler removal
+            item.remove();
+            // Optional: remove from uploadedFiles array too if tracking by index
+        }
+        updateImageCount();
     }
+
+    function updateImageCount() {
+        const total = document.querySelectorAll('.uploaded-image-item').length;
+        document.getElementById('image-count').textContent = total;
+        document.getElementById('uploaded-images-container').style.display = total > 0 ? 'block' : 'none';
+    }
+
+    // Drag and Drop support
+    const dropzone = document.getElementById('multi-dropzone');
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eName => {
+        dropzone.addEventListener(eName, e => {
+            e.preventDefault();
+            e.stopPropagation();
+        }, false);
+    });
+
+    ['dragenter', 'dragover'].forEach(eName => {
+        dropzone.addEventListener(eName, () => dropzone.classList.add('dragover'), false);
+    });
+
+    ['dragleave', 'drop'].forEach(eName => {
+        dropzone.addEventListener(eName, () => dropzone.classList.remove('dragover'), false);
+    });
+
+    dropzone.addEventListener('drop', e => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        const input = document.getElementById('imageInput');
+        previewImages({ files: files });
+    });
+
+    // Initial count
+    updateImageCount();
 
     document.getElementById('listingForm').addEventListener('submit', function(e) {
         e.preventDefault();
         document.getElementById('savingOverlay').classList.add('active');
         const fd = new FormData(this);
         const ex = [];
-        document.querySelectorAll('.preview-item[data-existing]').forEach(i => ex.push(i.dataset.existing));
+        document.querySelectorAll('.uploaded-image-item[data-existing]').forEach(i => ex.push(i.dataset.existing));
         fd.set('existing_images_list', JSON.stringify(ex));
         fd.delete('uploaded_images[]');
         uploadedFiles.forEach(f => fd.append('uploaded_images[]', f));

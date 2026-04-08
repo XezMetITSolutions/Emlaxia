@@ -31,18 +31,12 @@
                     <a href="/#property-request"><?php echo t('contact'); ?></a>
                 </nav>
                 <div class="header-actions">
-                    <a href="/ilan-ver" class="btn-post-ad">
-                        <i class="fas fa-plus-circle"></i> <?php echo $lang == 'tr' ? 'İlan Ver' : 'Post Ad'; ?>
-                    </a>
+
                     
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <div class="user-nav">
                             <?php
-                            $panel_url = '/uye/dashboard';
-                            if ($_SESSION['user_type'] === 'emlakci')
-                                $panel_url = '/emlakci/dashboard';
-                            elseif ($_SESSION['user_type'] === 'bireysel')
-                                $panel_url = '/bireysel/dashboard';
+                            $panel_url = $_SESSION['user_type'] === 'emlakci' ? '/emlakci/dashboard' : '/bireysel/dashboard';
                             ?>
                             <a href="<?php echo $panel_url; ?>" class="btn-panel">
                                 <i class="fas fa-user-circle"></i> <?php echo $lang == 'tr' ? 'Hesabım' : 'My Account'; ?>
@@ -89,9 +83,7 @@
             <a href="/yenisehir"><?php echo $lang == 'tr' ? 'Projeler' : 'Projects'; ?></a>
         </nav>
         <div class="drawer-footer">
-            <a href="/kayit" class="btn-post-ad" style="width: 100%; justify-content: center; margin-bottom: 1rem;">
-                <i class="fas fa-plus-circle"></i> <?php echo $lang == 'tr' ? 'İlan Ver' : 'Post Ad'; ?>
-            </a>
+
             <?php if (!isset($_SESSION['user_id']) && !isset($_SESSION['admin_logged_in'])): ?>
                 <div class="auth-btns" style="flex-direction: column; width: 100%;">
                     <a href="/giris" class="btn-login" style="text-align: center;"><?php echo $lang == 'tr' ? 'Giriş Yap' : 'Login'; ?></a>

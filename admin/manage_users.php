@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $_SESSION['success_message'] = 'Kullanıcı silindi.';
         } elseif ($action === 'change_type') {
             $new_type = $_POST['new_type'] ?? '';
-            if (in_array($new_type, ['emlakci', 'bireysel', 'uye'])) {
+            if (in_array($new_type, ['emlakci', 'bireysel'])) {
                 $pdo->prepare("UPDATE users SET user_type = :type WHERE id = :id")->execute([':type' => $new_type, ':id' => $uid]);
                 $_SESSION['success_message'] = 'Kullanıcı tipi güncellendi.';
             }
@@ -52,8 +52,8 @@ if ($filter === 'emlakci')
     $where = "AND user_type = 'emlakci'";
 elseif ($filter === 'bireysel')
     $where = "AND user_type = 'bireysel'";
-elseif ($filter === 'uye')
-    $where = "AND user_type = 'uye'";
+elseif ($filter === 'bireysel')
+    $where = "AND user_type = 'bireysel'";
 elseif ($filter === 'pending')
     $where = "AND status = 'pending'";
 
@@ -62,7 +62,7 @@ $total = 0;
 $pending = 0;
 $emlakci_count = 0;
 $bireysel_count = 0;
-$uye_count = 0;
+$bireysel_count = 0;
 
 try {
     // Check if user_id column exists in listings table
@@ -86,7 +86,7 @@ try {
     $pending = $pdo->query("SELECT COUNT(*) FROM users WHERE status = 'pending'")->fetchColumn();
     $emlakci_count = $pdo->query("SELECT COUNT(*) FROM users WHERE user_type = 'emlakci'")->fetchColumn();
     $bireysel_count = $pdo->query("SELECT COUNT(*) FROM users WHERE user_type = 'bireysel'")->fetchColumn();
-    $uye_count = $pdo->query("SELECT COUNT(*) FROM users WHERE user_type = 'uye'")->fetchColumn();
+    $bireysel_count = $pdo->query("SELECT COUNT(*) FROM users WHERE user_type = 'bireysel'")->fetchColumn();
 } catch (PDOException $e) {
     // users tablosu mevcut olmayabilir
     $error_message = 'Veritabanı hatası: ' . $e->getMessage() . '<br>Lütfen önce <a href="migrate_users.php">migration</a> çalıştırın.';
@@ -345,12 +345,6 @@ try {
                     <?php echo $bireysel_count; ?>
                 </span>
             </a>
-            <a href="/admin/manage_users?filter=uye"
-                class="filter-tab <?php echo $filter === 'uye' ? 'active' : ''; ?>">
-                👥 Normal Üye <span class="filter-count">
-                    <?php echo $uye_count; ?>
-                </span>
-            </a>
         </div>
 
         <div class="users-table">
@@ -402,7 +396,6 @@ try {
                                             color: <?php 
                                                 echo $u['user_type'] === 'emlakci' ? '#16a34a' : ($u['user_type'] === 'bireysel' ? '#2563eb' : '#64748b'); 
                                             ?>;">
-                                            <option value="uye" <?php echo $u['user_type'] === 'uye' ? 'selected' : ''; ?>>👥 Normal Üye</option>
                                             <option value="bireysel" <?php echo $u['user_type'] === 'bireysel' ? 'selected' : ''; ?>>👤 Bireysel</option>
                                             <option value="emlakci" <?php echo $u['user_type'] === 'emlakci' ? 'selected' : ''; ?>>🏢 Emlakçı</option>
                                         </select>

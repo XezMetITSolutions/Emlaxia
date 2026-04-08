@@ -14,7 +14,7 @@ function registerUser($pdo, $data)
         return ['success' => false, 'message' => 'Tüm zorunlu alanları doldurunuz.'];
     }
 
-    if (!in_array($data['user_type'], ['emlakci', 'bireysel', 'uye'])) {
+    if (!in_array($data['user_type'], ['emlakci', 'bireysel'])) {
         return ['success' => false, 'message' => 'Geçersiz kullanıcı tipi.'];
     }
 
@@ -200,6 +200,7 @@ function loginUser($pdo, $username, $password)
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['user_username'] = $user['username'] ?? '';
     $_SESSION['user_type'] = $user['user_type'] ?? 'bireysel';
+    if ($_SESSION['user_type'] === 'uye') $_SESSION['user_type'] = 'bireysel';
     $_SESSION['user_full_name'] = $user['full_name'] ?? '';
     $_SESSION['user_email'] = $user['email'] ?? '';
 

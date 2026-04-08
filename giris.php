@@ -8,9 +8,7 @@ require_once 'includes/auth.php';
 
 // Zaten giriş yapılmışsa yönlendir
 if (checkUserAuth()) {
-    $redirect = '/uye/dashboard';
-    if ($_SESSION['user_type'] === 'emlakci') $redirect = '/emlakci/dashboard';
-    elseif ($_SESSION['user_type'] === 'bireysel') $redirect = '/bireysel/dashboard';
+    $redirect = $_SESSION['user_type'] === 'emlakci' ? '/emlakci/dashboard' : '/bireysel/dashboard';
     
     header('Location: ' . $redirect);
     exit;
@@ -31,9 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (ob_get_length())
                     ob_end_clean();
 
-                $redirect = '/uye/dashboard';
-                if ($_SESSION['user_type'] === 'emlakci') $redirect = '/emlakci/dashboard';
-                elseif ($_SESSION['user_type'] === 'bireysel') $redirect = '/bireysel/dashboard';
+                $redirect = $_SESSION['user_type'] === 'emlakci' ? '/emlakci/dashboard' : '/bireysel/dashboard';
 
                 header('Location: ' . $redirect);
                 exit;

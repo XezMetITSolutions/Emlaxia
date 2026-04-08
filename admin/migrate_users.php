@@ -26,7 +26,7 @@ try {
     $user_columns = [
         'phone' => "VARCHAR(20)",
         'full_name' => "VARCHAR(255)",
-        'user_type' => "ENUM('emlakci', 'bireysel', 'uye') NOT NULL",
+        'user_type' => "ENUM('emlakci', 'bireysel') NOT NULL",
         'firma_adi' => "VARCHAR(255) NULL",
         'vergi_no' => "VARCHAR(50) NULL",
         'lisans_no' => "VARCHAR(100) NULL",

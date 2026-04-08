@@ -149,7 +149,7 @@ if (checkUserAuth()) {
                 </a>
 
                 <!-- Hesabım Yok -->
-                <a href="/kayit-ilan" class="option-card">
+                <a href="/kayit" class="option-card">
                     <div class="option-icon"><i class="fas fa-user-plus"></i></div>
                     <div class="option-title"><?php echo $lang === 'tr' ? 'Hesabım Yok' : 'I Don\'t Have an Account'; ?></div>
                     <p class="option-desc">

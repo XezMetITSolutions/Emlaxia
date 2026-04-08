@@ -383,9 +383,7 @@ if ($city) {
                         <p style="max-width: 600px; margin: 0 auto 40px; color: var(--premium-text-muted); font-size: 1.1rem;">
                             <?php echo $lang == 'tr' ? 'Uzman ekibimizle ilanınızı binlerce alıcıya ulaştırıyoruz. Hemen bizimle iletişime geçin.' : 'We bring your listing to thousands of buyers with our expert team. Contact us now.'; ?>
                         </p>
-                        <a href="/kayit" class="btn-search-premium" style="display: inline-flex; width: auto; padding: 18px 48px; text-decoration: none;">
-                            <i class="fas fa-plus-circle"></i> <?php echo $lang == 'tr' ? 'ÜCRETSİZ İLAN VER' : 'POST FREE AD'; ?>
-                        </a>
+
                     </div>
                 </div>
             </div>
