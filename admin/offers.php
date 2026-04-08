@@ -100,9 +100,9 @@ $offers = $stmt->fetchAll();
                                     <td>
                                         <div class="offer-actions">
                                             <?php if ($offer['status'] == 'pending'): ?>
-                                                <a href="offers.php?update_status=1&offer_id=<?php echo $offer['id']; ?>&status=accepted"
+                                                <a href="/admin/offers?update_status=1&offer_id=<?php echo $offer['id']; ?>&status=accepted"
                                                     class="btn btn-small btn-success"><?php echo t('accept'); ?></a>
-                                                <a href="offers.php?update_status=1&offer_id=<?php echo $offer['id']; ?>&status=rejected"
+                                                <a href="/admin/offers?update_status=1&offer_id=<?php echo $offer['id']; ?>&status=rejected"
                                                     class="btn btn-small btn-danger"><?php echo t('reject'); ?></a>
                                             <?php endif; ?>
                                         </div>

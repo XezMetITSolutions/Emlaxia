@@ -353,21 +353,21 @@ try {
         </h1>
 
         <div class="filter-tabs">
-            <a href="approvals.php?filter=pending"
+            <a href="/admin/approvals?filter=pending"
                 class="filter-tab <?php echo $filter === 'pending' ? 'active' : ''; ?>">
                 ⏳
                 <?php echo $lang === 'tr' ? 'Bekleyen' : 'Pending'; ?> <span class="filter-count">
                     <?php echo $pending_count; ?>
                 </span>
             </a>
-            <a href="approvals.php?filter=approved"
+            <a href="/admin/approvals?filter=approved"
                 class="filter-tab <?php echo $filter === 'approved' ? 'active' : ''; ?>">
                 ✅
                 <?php echo $lang === 'tr' ? 'Onaylanan' : 'Approved'; ?> <span class="filter-count">
                     <?php echo $approved_count; ?>
                 </span>
             </a>
-            <a href="approvals.php?filter=rejected"
+            <a href="/admin/approvals?filter=rejected"
                 class="filter-tab <?php echo $filter === 'rejected' ? 'active' : ''; ?>">
                 ❌
                 <?php echo $lang === 'tr' ? 'Reddedilen' : 'Rejected'; ?> <span class="filter-count">
@@ -437,7 +437,7 @@ try {
                             <?php echo ['pending' => '⏳ Bekliyor', 'approved' => '✅ Onaylı', 'rejected' => '❌ Reddedildi'][$l['approval_status']] ?? ''; ?>
                         </span>
 
-                        <a href="/admin/listing_form.php?id=<?php echo $l['id']; ?>"
+                        <a href="/admin/listing_form?id=<?php echo $l['id']; ?>"
                             style="font-size:0.8rem;color:#1e88e5;text-decoration:none;" target="_blank">👁️ İlanı Gör</a>
 
                         <?php if ($l['approval_status'] === 'pending'): ?>

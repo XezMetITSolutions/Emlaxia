@@ -306,24 +306,24 @@ try {
         </h1>
 
         <div class="filter-tabs">
-            <a href="manage_users.php" class="filter-tab <?php echo $filter === 'all' ? 'active' : ''; ?>">
+            <a href="/admin/manage_users" class="filter-tab <?php echo $filter === 'all' ? 'active' : ''; ?>">
                 Tümü <span class="filter-count">
                     <?php echo $total; ?>
                 </span>
             </a>
-            <a href="manage_users.php?filter=pending"
+            <a href="/admin/manage_users?filter=pending"
                 class="filter-tab <?php echo $filter === 'pending' ? 'active' : ''; ?>">
                 ⏳ Onay Bekleyen <span class="filter-count">
                     <?php echo $pending; ?>
                 </span>
             </a>
-            <a href="manage_users.php?filter=emlakci"
+            <a href="/admin/manage_users?filter=emlakci"
                 class="filter-tab <?php echo $filter === 'emlakci' ? 'active' : ''; ?>">
                 🏢 Emlakçı <span class="filter-count">
                     <?php echo $emlakci_count; ?>
                 </span>
             </a>
-            <a href="manage_users.php?filter=bireysel"
+            <a href="/admin/manage_users?filter=bireysel"
                 class="filter-tab <?php echo $filter === 'bireysel' ? 'active' : ''; ?>">
                 👤 Bireysel <span class="filter-count">
                     <?php echo $bireysel_count; ?>

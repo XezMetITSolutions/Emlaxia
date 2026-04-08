@@ -688,8 +688,8 @@ $comments = $stmt->fetchAll();
                                     <div class="pd-comment-item">
                                         <div class="pd-comment-meta">
                                             <div class="pd-comment-author">
-                                                <div class="pd-comment-avatar"><?php echo mb_substr($comment['user_name'], 0, 1); ?></div>
-                                                <span class="pd-comment-name"><?php echo htmlspecialchars($comment['user_name']); ?></span>
+                                                <div class="pd-comment-avatar"><?php echo mb_substr($comment['user_name'], 0, 1, 'UTF-8'); ?></div>
+                                                <span class="pd-comment-name"><?php echo htmlspecialchars(maskName($comment['user_name'])); ?></span>
                                             </div>
                                             <span class="pd-comment-date"><?php echo date('d.m.Y H:i', strtotime($comment['created_at'])); ?></span>
                                         </div>
@@ -817,6 +817,18 @@ $comments = $stmt->fetchAll();
     <script>
         // Property ID
         const PROPERTY_ID = <?php echo $listing['id']; ?>;
+
+        // Utility for masking names
+        function maskName(name) {
+            if (!name) return "";
+            return name.split(' ').map(part => {
+                const arr = Array.from(part);
+                if (arr.length > 1) {
+                    return arr[0] + '*'.repeat(arr.length - 1);
+                }
+                return part;
+            }).join(' ');
+        }
 
         // Image gallery data
         const galleryImages = [
@@ -1027,7 +1039,7 @@ $comments = $stmt->fetchAll();
                                 <div class="pd-comment-meta">
                                     <div class="pd-comment-author">
                                         <div class="pd-comment-avatar">${initial}</div>
-                                        <span class="pd-comment-name">${data.comment.user_name}</span>
+                                        <span class="pd-comment-name">${maskName(data.comment.user_name)}</span>
                                     </div>
                                     <span class="pd-comment-date">${data.comment.created_at}</span>
                                 </div>

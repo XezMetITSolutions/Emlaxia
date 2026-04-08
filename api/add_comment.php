@@ -39,7 +39,7 @@ try {
         'message' => 'Yorumunuz başarıyla eklendi',
         'comment' => [
             'id' => $new_comment['id'],
-            'user_name' => $new_comment['user_name'],
+            'user_name' => maskName($new_comment['user_name']),
             'content' => $new_comment['content'],
             'created_at' => date('d.m.Y H:i', strtotime($new_comment['created_at']))
         ]
