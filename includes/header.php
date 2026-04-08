@@ -252,19 +252,22 @@
     .btn-login {
         color: white;
         text-decoration: none;
-        font-weight: 600;
-        font-size: 0.8rem;
-        padding: 6px 12px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
-        transition: all 0.2s;
+        font-weight: 700;
+        font-size: 0.85rem;
+        padding: 10px 24px;
+        border: 2px solid rgba(211, 175, 55, 0.5);
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         white-space: nowrap;
+        background: rgba(211, 175, 55, 0.05);
     }
 
     .btn-login:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: #D3AF37;
+        background: #D3AF37;
+        color: #0F123D;
         border-color: #D3AF37;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(211, 175, 55, 0.3);
     }
 
     .btn-register {
