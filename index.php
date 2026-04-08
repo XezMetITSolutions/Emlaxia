@@ -308,6 +308,30 @@ if ($city) {
             </div>
         </section>
 
+        <!-- Custom Shop Showcase -->
+        <section class="shop-showcase">
+            <div class="shop-showcase-container">
+                <div class="side-image left">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" alt="Luxurious Home">
+                </div>
+                
+                <div class="shop-content">
+                    <div class="shop-badge"><?php echo $lang == 'tr' ? 'YENİŞEHİR PROJESİ' : 'YENISHEHIR PROJECT'; ?></div>
+                    <h2><?php echo $lang == 'tr' ? 'Hayalinizdeki Dükkanı' : 'Your Dream Shop'; ?><br><span><?php echo $lang == 'tr' ? 'Bizimle Keşfedin' : 'Discover with Us'; ?></span></h2>
+                    <p><?php echo $lang == 'tr' ? 'Geleceğin ticaret merkezinde, en doğru yatırım için yanınızdayız.' : 'We are with you for the right investment in the trade center of the future.'; ?></p>
+                    <a href="/ilanlar?property_type=dukkan" class="btn-card" style="width: auto; padding: 12px 32px; display: inline-flex;">
+                        <?php echo $lang == 'tr' ? 'İlanları Gör' : 'See Listings'; ?>
+                    </a>
+                </div>
+
+                <div class="side-image right">
+                    <!-- Note to User: Replace this with the map image you provided -->
+                    <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=800&q=80" alt="Development Map">
+                    <div class="image-overlay-text"><?php echo $lang == 'tr' ? 'Stratejik Planlama' : 'Strategic Planning'; ?></div>
+                </div>
+            </div>
+        </section>
+
         <!-- Stats Section -->
         <section class="stats-premium">
             <div class="container">

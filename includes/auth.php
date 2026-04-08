@@ -42,9 +42,10 @@ function registerUser($pdo, $data)
 
     // Kayıt
     $hashedPassword = password_hash($data['password'], PASSWORD_DEFAULT);
+    $activationToken = bin2hex(random_bytes(20));
 
-    $sql = "INSERT INTO users (username, email, password, phone, full_name, user_type, firma_adi, vergi_no, lisans_no, ofis_adresi, status)
-            VALUES (:username, :email, :password, :phone, :full_name, :user_type, :firma_adi, :vergi_no, :lisans_no, :ofis_adresi, 'pending')";
+    $sql = "INSERT INTO users (username, email, password, phone, full_name, user_type, firma_adi, vergi_no, lisans_no, ofis_adresi, status, email_verified, activation_token)
+            VALUES (:username, :email, :password, :phone, :full_name, :user_type, :firma_adi, :vergi_no, :lisans_no, :ofis_adresi, 'active', 0, :token)";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
@@ -58,9 +59,28 @@ function registerUser($pdo, $data)
         ':vergi_no' => trim($data['vergi_no'] ?? ''),
         ':lisans_no' => trim($data['lisans_no'] ?? ''),
         ':ofis_adresi' => trim($data['ofis_adresi'] ?? ''),
+        ':token' => $activationToken
     ]);
 
-    return ['success' => true, 'message' => 'Kayıt başarılı! Hesabınız onay bekliyor.', 'user_id' => $pdo->lastInsertId()];
+    $userId = $pdo->lastInsertId();
+
+    // Aktivasyon e-postası gönder
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $activationLink = "$protocol://$host/verify.php?token=$activationToken";
+    
+    $subject = "Emlaxia - Hesap Aktivasyonu";
+    $message = "Merhaba " . ($data['full_name'] ?? $data['username']) . ",\n\n";
+    $message .= "Üyeliğinizi tamamlamak için lütfen aşağıdaki bağlantıya tıklayınız:\n";
+    $message .= $activationLink . "\n\n";
+    $message .= "Emlaxia Ekibi";
+    
+    $headers = "From: no-reply@emlaxia.com\r\n";
+    $headers .= "Content-Type: text/plain; charset=utf-8\r\n";
+    
+    @mail($data['email'], $subject, $message, $headers);
+
+    return ['success' => true, 'message' => 'Kayıt başarılı! Lütfen e-posta adresinize gönderilen aktivasyon linkine tıklayınız.'];
 }
 
 /**
@@ -80,8 +100,12 @@ function loginUser($pdo, $username, $password)
         return ['success' => false, 'message' => 'Kullanıcı adı veya şifre hatalı.'];
     }
 
+    if ($user['email_verified'] == 0) {
+        return ['success' => false, 'message' => 'Lütfen e-posta adresinizi doğrulayınız. Aktivasyon linki kayıt sırasında gönderilmiştir.'];
+    }
+
     if ($user['status'] === 'pending') {
-        return ['success' => false, 'message' => 'Hesabınız henüz onaylanmadı. Lütfen onay için bekleyiniz.'];
+        return ['success' => false, 'message' => 'Hesabınız yönetici onayı bekliyor.'];
     }
 
     if ($user['status'] === 'suspended') {

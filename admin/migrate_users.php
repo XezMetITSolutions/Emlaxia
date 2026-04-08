@@ -70,8 +70,8 @@ try {
     // 4. listings tablosuna approval_status kolonu ekle
     $stmt = $pdo->query("SHOW COLUMNS FROM listings LIKE 'approval_status'");
     if (!$stmt->fetch()) {
-        $pdo->exec("ALTER TABLE listings ADD COLUMN approval_status ENUM('pending','approved','rejected') DEFAULT 'approved' AFTER status");
-        $results[] = "✅ 'listings' tablosuna 'approval_status' kolonu eklendi.";
+        $pdo->exec("ALTER TABLE listings ADD COLUMN approval_status ENUM('pending','approved','rejected') DEFAULT 'pending' AFTER status");
+        $results[] = "✅ 'listings' tablosuna 'approval_status' kolonu eklendi (Varsayılan: pending).";
     } else {
         $results[] = "ℹ️ 'approval_status' kolonu zaten mevcut.";
     }

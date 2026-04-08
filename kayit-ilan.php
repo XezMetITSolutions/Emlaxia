@@ -33,9 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $result = registerUser($pdo, $form_data);
         if ($result['success']) {
-            $success = $lang === 'tr'
-                ? 'Kayıt başarılı! Hesabınız yönetici tarafından onaylandıktan sonra giriş yapabileceksiniz.'
-                : 'Registration successful! You can login after your account is approved by an administrator.';
+            $success = $result['message'];
             $form_data = []; // Formu temizle
         } else {
             $error = $result['message'];

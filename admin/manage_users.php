@@ -350,6 +350,7 @@ try {
                             <th>Firma</th>
                             <th>İlan</th>
                             <th>Durum</th>
+                            <th>E-Posta Onay</th>
                             <th>Kayıt</th>
                             <th>İşlem</th>
                         </tr>
@@ -376,8 +377,13 @@ try {
                                     <?php echo $u['listing_count']; ?>
                                 </td>
                                 <td><span class="status-badge status-<?php echo $u['status']; ?>">
-                                        <?php echo ['pending' => 'Bekliyor', 'active' => 'Aktif', 'suspended' => 'Askıda', 'rejected' => 'Reddedildi'][$u['status']] ?? $u['status']; ?>
+                                        <?php echo ['pending' => 'Onay Bekliyor', 'active' => 'Panel Aktif', 'suspended' => 'Askıda', 'rejected' => 'Reddedildi'][$u['status']] ?? $u['status']; ?>
                                     </span></td>
+                                <td>
+                                    <span class="status-badge" style="background: <?php echo $u['email_verified'] ? '#dcfce7' : '#fee2e2'; ?>; color: <?php echo $u['email_verified'] ? '#16a34a' : '#991b1b'; ?>;">
+                                        <?php echo $u['email_verified'] ? '✅ Doğrulandı' : '⏳ Bekliyor'; ?>
+                                    </span>
+                                </td>
                                 <td>
                                     <?php echo date('d.m.Y', strtotime($u['created_at'])); ?>
                                 </td>
