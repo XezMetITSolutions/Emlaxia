@@ -142,6 +142,14 @@ if ($city) {
             <div class="hero-overlay"></div>
             <div class="container" style="position: relative; z-index: 2;">
                 <div class="hero-wrapper">
+                    <div class="hero-image-side left">
+                        <img src="assets/images/modern-villa.png" alt="Luxury Villa">
+                        <div class="image-floating-badge" style="left: auto; right: -20px;">
+                            <i class="fas fa-home"></i>
+                            <span><?php echo $lang == 'tr' ? 'Lüks Yaşam' : 'Luxury Living'; ?></span>
+                        </div>
+                    </div>
+
                     <div class="hero-content">
                         <h1>
                             <?php if($lang == 'tr'): ?>
@@ -222,7 +230,7 @@ if ($city) {
                         </div>
                     </div>
 
-                    <div class="hero-image-side">
+                    <div class="hero-image-side right">
                         <img src="KanalIstanbul.jpeg" alt="Kanal Istanbul">
                         <div class="image-floating-badge">
                             <i class="fas fa-star"></i>

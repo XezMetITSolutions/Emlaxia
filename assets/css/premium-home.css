@@ -52,17 +52,17 @@ h1, h2, h3, .premium-heading {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 60px;
+    gap: 40px;
     width: 100%;
 }
 
 .hero-content {
-    flex: 1.2;
-    text-align: left;
+    flex: 1.5;
+    text-align: center;
 }
 
 .hero-image-side {
-    flex: 0.8;
+    flex: 1;
     position: relative;
     display: flex;
     justify-content: center;
@@ -72,17 +72,24 @@ h1, h2, h3, .premium-heading {
 
 .hero-image-side img {
     width: 100%;
-    max-width: 500px;
+    max-width: 400px;
     height: auto;
     border-radius: 30px;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-    transform: rotateY(-10px) rotateX(5px);
     transition: all 0.5s ease;
     border: 4px solid rgba(255, 255, 255, 0.1);
 }
 
+.hero-image-side.left img {
+    transform: rotateY(15deg) rotateX(5deg);
+}
+
+.hero-image-side.right img {
+    transform: rotateY(-15deg) rotateX(5deg);
+}
+
 .hero-image-side:hover img {
-    transform: rotateY(0) rotateX(0) scale(1.02);
+    transform: rotateY(0) rotateX(0) scale(1.05);
     box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
 }
 
@@ -92,16 +99,17 @@ h1, h2, h3, .premium-heading {
     left: -20px;
     background: var(--premium-gold);
     color: var(--premium-navy);
-    padding: 15px 25px;
+    padding: 12px 20px;
     border-radius: 20px;
     display: flex;
     align-items: center;
     gap: 10px;
     font-weight: 800;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     box-shadow: 0 10px 30px rgba(211, 175, 55, 0.4);
     animation: floating 3s ease-in-out infinite;
     z-index: 5;
+    white-space: nowrap;
 }
 
 @keyframes floating {
@@ -110,7 +118,7 @@ h1, h2, h3, .premium-heading {
 }
 
 .hero-content h1 {
-    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-size: clamp(2rem, 4vw, 3.8rem);
     line-height: 1.1;
     margin-bottom: 24px;
     color: white;
@@ -528,6 +536,12 @@ h1, h2, h3, .premium-heading {
 }
 
 /* --- Responsive Listings --- */
+@media (max-width: 1200px) {
+    .hero-image-side img {
+        max-width: 300px;
+    }
+}
+
 @media (max-width: 1024px) {
     .hero-wrapper {
         flex-direction: column;
