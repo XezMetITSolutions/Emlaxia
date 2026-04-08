@@ -26,7 +26,7 @@ try {
     $user_columns = [
         'phone' => "VARCHAR(20)",
         'full_name' => "VARCHAR(255)",
-        'user_type' => "ENUM('emlakci', 'bireysel') NOT NULL",
+        'user_type' => "ENUM('emlakci', 'bireysel', 'uye') NOT NULL",
         'firma_adi' => "VARCHAR(255) NULL",
         'vergi_no' => "VARCHAR(50) NULL",
         'lisans_no' => "VARCHAR(100) NULL",
@@ -37,6 +37,7 @@ try {
         'website' => "VARCHAR(255) NULL",
         'status' => "ENUM('pending', 'active', 'suspended', 'rejected') DEFAULT 'pending'",
         'email_verified' => "TINYINT(1) DEFAULT 0",
+        'activation_token' => "VARCHAR(255) NULL",
         'updated_at' => "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP",
         'last_login' => "TIMESTAMP NULL"
     ];
