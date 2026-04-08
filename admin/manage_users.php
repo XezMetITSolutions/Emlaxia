@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $_SESSION['success_message'] = 'Kullanıcı silindi.';
         } elseif ($action === 'change_type') {
             $new_type = $_POST['new_type'] ?? '';
-            if (in_array($new_type, ['emlakci', 'bireysel'])) {
+            if (in_array($new_type, ['emlakci', 'bireysel', 'uye'])) {
                 $pdo->prepare("UPDATE users SET user_type = :type WHERE id = :id")->execute([':type' => $new_type, ':id' => $uid]);
                 $_SESSION['success_message'] = 'Kullanıcı tipi güncellendi.';
             }
@@ -52,6 +52,8 @@ if ($filter === 'emlakci')
     $where = "AND user_type = 'emlakci'";
 elseif ($filter === 'bireysel')
     $where = "AND user_type = 'bireysel'";
+elseif ($filter === 'uye')
+    $where = "AND user_type = 'uye'";
 elseif ($filter === 'pending')
     $where = "AND status = 'pending'";
 
@@ -60,6 +62,7 @@ $total = 0;
 $pending = 0;
 $emlakci_count = 0;
 $bireysel_count = 0;
+$uye_count = 0;
 
 try {
     // Check if user_id column exists in listings table
@@ -83,6 +86,7 @@ try {
     $pending = $pdo->query("SELECT COUNT(*) FROM users WHERE status = 'pending'")->fetchColumn();
     $emlakci_count = $pdo->query("SELECT COUNT(*) FROM users WHERE user_type = 'emlakci'")->fetchColumn();
     $bireysel_count = $pdo->query("SELECT COUNT(*) FROM users WHERE user_type = 'bireysel'")->fetchColumn();
+    $uye_count = $pdo->query("SELECT COUNT(*) FROM users WHERE user_type = 'uye'")->fetchColumn();
 } catch (PDOException $e) {
     // users tablosu mevcut olmayabilir
     $error_message = 'Veritabanı hatası: ' . $e->getMessage() . '<br>Lütfen önce <a href="migrate_users.php">migration</a> çalıştırın.';
@@ -221,6 +225,11 @@ try {
             color: #2563eb;
         }
 
+        .badge-uye {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
         .status-badge {
             font-size: 0.7rem;
             font-weight: 600;
@@ -335,6 +344,12 @@ try {
                     <?php echo $bireysel_count; ?>
                 </span>
             </a>
+            <a href="/admin/manage_users?filter=uye"
+                class="filter-tab <?php echo $filter === 'uye' ? 'active' : ''; ?>">
+                👥 Normal Üye <span class="filter-count">
+                    <?php echo $uye_count; ?>
+                </span>
+            </a>
         </div>
 
         <div class="users-table">
@@ -380,8 +395,13 @@ try {
                                         <input type="hidden" name="action" value="change_type">
                                         <select name="new_type" onchange="if(confirm('Kullanıcı tipini değiştirmek istediğinize emin misiniz?')) this.form.submit(); else this.value='<?php echo $u['user_type']; ?>';" 
                                             style="padding: 4px 8px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.75rem; cursor: pointer; font-weight: 600; outline: none; transition: all 0.2s;
-                                            background: <?php echo $u['user_type'] === 'emlakci' ? '#dcfce7' : '#dbeafe'; ?>; 
-                                            color: <?php echo $u['user_type'] === 'emlakci' ? '#16a34a' : '#2563eb'; ?>;">
+                                            background: <?php 
+                                                echo $u['user_type'] === 'emlakci' ? '#dcfce7' : ($u['user_type'] === 'bireysel' ? '#dbeafe' : '#f1f5f9'); 
+                                            ?>; 
+                                            color: <?php 
+                                                echo $u['user_type'] === 'emlakci' ? '#16a34a' : ($u['user_type'] === 'bireysel' ? '#2563eb' : '#64748b'); 
+                                            ?>;">
+                                            <option value="uye" <?php echo $u['user_type'] === 'uye' ? 'selected' : ''; ?>>👥 Normal Üye</option>
                                             <option value="bireysel" <?php echo $u['user_type'] === 'bireysel' ? 'selected' : ''; ?>>👤 Bireysel</option>
                                             <option value="emlakci" <?php echo $u['user_type'] === 'emlakci' ? 'selected' : ''; ?>>🏢 Emlakçı</option>
                                         </select>

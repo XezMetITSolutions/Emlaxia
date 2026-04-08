@@ -25,7 +25,7 @@ $form_data = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $form_data = $_POST;
-    $form_data['user_type'] = 'bireysel';
+    $form_data['user_type'] = 'uye'; // Normal üye
 
     // Şifre eşleşme kontrolü
     if (($form_data['password'] ?? '') !== ($form_data['password_confirm'] ?? '')) {
@@ -256,7 +256,7 @@ $csrf_token = generateCsrfToken();
 
             <form method="POST" action="/kayit" id="registerForm">
                 <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
-                <input type="hidden" name="user_type" id="user_type_hidden" value="bireysel">
+                <input type="hidden" name="user_type" id="user_type_hidden" value="uye">
 
                 <!-- Temel Bilgiler -->
                 <div class="form-row">
