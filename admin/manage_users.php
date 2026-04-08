@@ -34,6 +34,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             }
             $pdo->prepare("DELETE FROM users WHERE id = :id")->execute([':id' => $uid]);
             $_SESSION['success_message'] = 'Kullanıcı silindi.';
+        } elseif ($action === 'change_type') {
+            $new_type = $_POST['new_type'] ?? '';
+            if (in_array($new_type, ['emlakci', 'bireysel'])) {
+                $pdo->prepare("UPDATE users SET user_type = :type WHERE id = :id")->execute([':type' => $new_type, ':id' => $uid]);
+                $_SESSION['success_message'] = 'Kullanıcı tipi güncellendi.';
+            }
         }
     }
     header('Location: manage_users.php');
@@ -368,9 +374,19 @@ try {
                                 <td>
                                     <?php echo htmlspecialchars($u['email']); ?>
                                 </td>
-                                <td><span class="user-badge badge-<?php echo $u['user_type']; ?>">
-                                        <?php echo $u['user_type'] === 'emlakci' ? '🏢 Emlakçı' : '👤 Bireysel'; ?>
-                                    </span></td>
+                                <td>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
+                                        <input type="hidden" name="action" value="change_type">
+                                        <select name="new_type" onchange="if(confirm('Kullanıcı tipini değiştirmek istediğinize emin misiniz?')) this.form.submit(); else this.value='<?php echo $u['user_type']; ?>';" 
+                                            style="padding: 4px 8px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.75rem; cursor: pointer; font-weight: 600; outline: none; transition: all 0.2s;
+                                            background: <?php echo $u['user_type'] === 'emlakci' ? '#dcfce7' : '#dbeafe'; ?>; 
+                                            color: <?php echo $u['user_type'] === 'emlakci' ? '#16a34a' : '#2563eb'; ?>;">
+                                            <option value="bireysel" <?php echo $u['user_type'] === 'bireysel' ? 'selected' : ''; ?>>👤 Bireysel</option>
+                                            <option value="emlakci" <?php echo $u['user_type'] === 'emlakci' ? 'selected' : ''; ?>>🏢 Emlakçı</option>
+                                        </select>
+                                    </form>
+                                </td>
                                 <td>
                                     <?php echo htmlspecialchars($u['firma_adi'] ?? '-'); ?>
                                 </td>
