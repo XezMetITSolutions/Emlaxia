@@ -254,7 +254,7 @@ if ($city) {
                                     </h3>
                                     <div class="feature-pill-group">
                                         <?php if ($listing['area']): ?>
-                                            <div class="feature-pill"><i class="fas fa-vector-square"></i> <?php echo $listing['area']; ?> m²</div>
+                                            <div class="feature-pill"><i class="fas fa-vector-square"></i> <?php echo $listing['area']; ?> m&sup2;</div>
                                         <?php endif; ?>
                                         <?php if ($listing['rooms']): ?>
                                             <div class="feature-pill"><i class="fas fa-bed"></i> <?php echo $listing['rooms']; ?></div>
