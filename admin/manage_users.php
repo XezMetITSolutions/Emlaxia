@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     $uid = $_POST['user_id'] ?? 0;
     $action = $_POST['action'];
 
-    if ($uid && in_array($action, ['activate', 'suspend', 'reject', 'delete'])) {
+    if ($uid && in_array($action, ['activate', 'suspend', 'reject', 'delete', 'change_type'])) {
         if ($action === 'activate') {
             $pdo->prepare("UPDATE users SET status = 'active', email_verified = 1 WHERE id = :id")->execute([':id' => $uid]);
             $_SESSION['success_message'] = 'Kullanıcı aktifleştirildi ve e-postası doğrulandı.';
@@ -104,6 +104,7 @@ try {
     <base href="/">
     <link rel="stylesheet" href="/assets/css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         * {
             font-family: 'Inter', sans-serif;
@@ -393,7 +394,7 @@ try {
                                     <form method="POST" style="display:inline;">
                                         <input type="hidden" name="user_id" value="<?php echo $u['id']; ?>">
                                         <input type="hidden" name="action" value="change_type">
-                                        <select name="new_type" onchange="if(confirm('Kullanıcı tipini değiştirmek istediğinize emin misiniz?')) this.form.submit(); else this.value='<?php echo $u['user_type']; ?>';" 
+                                        <select name="new_type" onchange="confirmTypeChange(this, '<?php echo $u['user_type']; ?>')" 
                                             style="padding: 4px 8px; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.75rem; cursor: pointer; font-weight: 600; outline: none; transition: all 0.2s;
                                             background: <?php 
                                                 echo $u['user_type'] === 'emlakci' ? '#dcfce7' : ($u['user_type'] === 'bireysel' ? '#dbeafe' : '#f1f5f9'); 
@@ -468,14 +469,59 @@ try {
         </div>
     </div>
     <script>
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Link kopyalandı!');
-            }).catch(err => {
-                console.error('Hata:', err);
-                alert('Kopyalanamadı.');
+        function confirmTypeChange(select, currentType) {
+            const types = {
+                'uye': '👥 Normal Üye',
+                'bireysel': '👤 Bireysel',
+                'emlakci': '🏢 Emlakçı'
+            };
+            const newTypeLabel = types[select.value];
+            
+            Swal.fire({
+                title: 'Emin misiniz?',
+                text: `Kullanıcı tipini "${newTypeLabel}" olarak değiştirmek üzeresiniz.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#1e88e5',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Evet, Değiştir',
+                cancelButtonText: 'Vazgeç',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    select.form.submit();
+                } else {
+                    select.value = currentType;
+                }
             });
         }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Link kopyalandı!',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            }).catch(err => {
+                console.error('Hata:', err);
+            });
+        }
+
+        // Show success message if exists
+        <?php if (isset($_SESSION['success_message'])): ?>
+            Swal.fire({
+                icon: 'success',
+                title: 'Başarılı',
+                text: '<?php echo $_SESSION['success_message']; ?>',
+                timer: 3000,
+                confirmButtonColor: '#1e88e5'
+            });
+            <?php unset($_SESSION['success_message']); ?>
+        <?php endif; ?>
     </script>
 </body>
 
