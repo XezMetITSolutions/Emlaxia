@@ -1,50 +1,40 @@
 <?php
 /**
- * Giriş Sayfası - Emlakçı ve Bireysel
+ * Yeni Şifre Belirleme Sayfası
  */
 ob_start();
 require_once 'config.php';
 require_once 'includes/auth.php';
 
-// Zaten giriş yapılmışsa yönlendir
 if (checkUserAuth()) {
-    $redirect = '/uye/dashboard';
-    if ($_SESSION['user_type'] === 'emlakci') $redirect = '/emlakci/dashboard';
-    elseif ($_SESSION['user_type'] === 'bireysel') $redirect = '/bireysel/dashboard';
-    
-    header('Location: ' . $redirect);
+    header('Location: /');
     exit;
 }
 
+$token = $_GET['token'] ?? $_POST['token'] ?? '';
 $error = '';
+$success = '';
+
+if (empty($token)) {
+    header('Location: /giris');
+    exit;
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
-        $username = trim($_POST['username'] ?? '');
-        $password = $_POST['password'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $password_confirm = $_POST['password_confirm'] ?? '';
 
-        if (!empty($username) && !empty($password)) {
-            $result = loginUser($pdo, $username, $password);
-            if ($result['success']) {
-                // Ensure no output before header redirect
-                session_write_close();
-                if (ob_get_length())
-                    ob_end_clean();
-
-                $redirect = '/uye/dashboard';
-                if ($_SESSION['user_type'] === 'emlakci') $redirect = '/emlakci/dashboard';
-                elseif ($_SESSION['user_type'] === 'bireysel') $redirect = '/bireysel/dashboard';
-
-                header('Location: ' . $redirect);
-                exit;
-            } else {
-                $error = $result['message'];
-            }
+    if (empty($password) || empty($password_confirm)) {
+        $error = $lang === 'tr' ? 'Tüm alanları doldurunuz.' : 'All fields are required.';
+    } elseif ($password !== $password_confirm) {
+        $error = $lang === 'tr' ? 'Şifreler eşleşmiyor.' : 'Passwords do not match.';
+    } else {
+        $result = resetPassword($pdo, $token, $password);
+        if ($result['success']) {
+            $success = $result['message'];
         } else {
-            $error = $lang === 'tr' ? 'Kullanıcı adı ve şifre gereklidir.' : 'Username and password are required.';
+            $error = $result['message'];
         }
-    } catch (Throwable $e) {
-        $error = "Hata oluştu: " . $e->getMessage();
     }
 }
 ?>
@@ -55,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        <?php echo $lang === 'tr' ? 'Giriş Yap' : 'Login'; ?> - Emlaxia
+        <?php echo $lang === 'tr' ? 'Yeni Şifre Belirle' : 'Set New Password'; ?> - Emlaxia
     </title>
     <base href="/">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -105,13 +95,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             max-width: 220px;
             height: auto;
             margin-bottom: 0.5rem;
-        }
-
-        .login-logo h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin: 0;
         }
 
         .login-logo p {
@@ -184,6 +167,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: 1px solid #fecaca;
         }
 
+        .alert-success {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
         .register-link {
             text-align: center;
             margin-top: 1.5rem;
@@ -200,37 +189,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .register-link a:hover {
             text-decoration: underline;
         }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin: 1.5rem 0;
-            color: #94a3b8;
-            font-size: 0.85rem;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #e2e8f0;
-        }
-
-        .admin-link {
-            text-align: center;
-            font-size: 0.8rem;
-        }
-
-        .admin-link a {
-            color: #94a3b8;
-            text-decoration: none;
-        }
-
-        .admin-link a:hover {
-            color: #1e88e5;
-        }
     </style>
 </head>
 
@@ -240,7 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="login-logo">
                 <img src="/Logo.png" alt="Emlaxia Logo" class="brand-logo">
                 <p>
-                    <?php echo $lang === 'tr' ? 'Hesabınıza giriş yapın' : 'Login to your account'; ?>
+                    <?php echo $lang === 'tr' ? 'Yeni şifrenizi belirleyin' : 'Set your new password'; ?>
                 </p>
             </div>
 
@@ -250,51 +208,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             <?php endif; ?>
 
-            <form method="POST" action="/giris">
-                <div class="form-group">
-                    <label>
-                        <?php echo $lang === 'tr' ? 'Kullanıcı Adı veya E-posta' : 'Username or Email'; ?>
-                    </label>
-                    <input type="text" name="username" required autofocus
-                        placeholder="<?php echo $lang === 'tr' ? 'Kullanıcı adınız veya e-posta' : 'Your username or email'; ?>">
+            <?php if ($success): ?>
+                <div class="alert alert-success">
+                    <?php echo htmlspecialchars($success); ?>
                 </div>
+                <div class="register-link">
+                    <a href="/giris" class="btn-login" style="display:block; text-decoration:none;">
+                        <?php echo $lang === 'tr' ? 'Giriş Yap' : 'Login'; ?>
+                    </a>
+                </div>
+            <?php endif; ?>
 
-                <div class="form-group">
-                    <label>
-                        <?php echo t('password'); ?>
-                    </label>
-                    <input type="password" name="password" required
-                        placeholder="<?php echo $lang === 'tr' ? 'Şifreniz' : 'Your password'; ?>">
-                    <div style="text-align: right; margin-top: 0.5rem;">
-                        <a href="/sifremi-unuttum" style="font-size: 0.85rem; color: #1e88e5; text-decoration: none; font-weight: 500;">
-                            <?php echo $lang === 'tr' ? 'Şifremi Unuttum?' : 'Forgot Password?'; ?>
-                        </a>
+            <?php if (!$success): ?>
+                <form method="POST" action="/sifre-sifirla">
+                    <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
+                    
+                    <div class="form-group">
+                        <label>
+                            <?php echo $lang === 'tr' ? 'Yeni Şifre' : 'New Password'; ?>
+                        </label>
+                        <input type="password" name="password" required autofocus minlength="6"
+                            placeholder="<?php echo $lang === 'tr' ? 'En az 6 karakter' : 'At least 6 characters'; ?>">
                     </div>
+
+                    <div class="form-group">
+                        <label>
+                            <?php echo $lang === 'tr' ? 'Yeni Şifre Tekrar' : 'Confirm New Password'; ?>
+                        </label>
+                        <input type="password" name="password_confirm" required minlength="6"
+                            placeholder="<?php echo $lang === 'tr' ? 'Yeni şifrenizi tekrar girin' : 'Repeat your new password'; ?>">
+                    </div>
+
+                    <button type="submit" class="btn-login">
+                        <?php echo $lang === 'tr' ? 'Şifreyi Güncelle' : 'Update Password'; ?>
+                    </button>
+                </form>
+            <?php endif; ?>
+
+            <?php if (!$success): ?>
+                <div class="register-link">
+                    <a href="/giris">←
+                        <?php echo $lang === 'tr' ? 'Girişe Dön' : 'Back to Login'; ?>
+                    </a>
                 </div>
-
-                <button type="submit" class="btn-login">
-                    <?php echo $lang === 'tr' ? 'Giriş Yap' : 'Login'; ?>
-                </button>
-            </form>
-
-            <div class="register-link">
-                <?php echo $lang === 'tr' ? 'Hesabınız yok mu?' : "Don't have an account?"; ?>
-                <a href="/kayit">
-                    <?php echo $lang === 'tr' ? 'Kayıt Ol' : 'Register'; ?>
-                </a>
-            </div>
-
-            <div class="divider">
-                <?php echo $lang === 'tr' ? 'veya' : 'or'; ?>
-            </div>
-
-            <div class="register-link" style="margin-top: 0;">
-                <a href="/">←
-                    <?php echo $lang === 'tr' ? 'Ana Sayfaya Dön' : 'Back to Home'; ?>
-                </a>
-            </div>
-
-            <!-- Admin login hidden as requested -->
+            <?php endif; ?>
         </div>
     </div>
 </body>

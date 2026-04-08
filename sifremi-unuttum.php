@@ -1,50 +1,34 @@
 <?php
 /**
- * Giriş Sayfası - Emlakçı ve Bireysel
+ * Şifremi Unuttum Sayfası
  */
 ob_start();
 require_once 'config.php';
 require_once 'includes/auth.php';
 
-// Zaten giriş yapılmışsa yönlendir
 if (checkUserAuth()) {
-    $redirect = '/uye/dashboard';
-    if ($_SESSION['user_type'] === 'emlakci') $redirect = '/emlakci/dashboard';
-    elseif ($_SESSION['user_type'] === 'bireysel') $redirect = '/bireysel/dashboard';
-    
-    header('Location: ' . $redirect);
+    header('Location: /');
     exit;
 }
 
 $error = '';
+$success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
-        $username = trim($_POST['username'] ?? '');
-        $password = $_POST['password'] ?? '';
-
-        if (!empty($username) && !empty($password)) {
-            $result = loginUser($pdo, $username, $password);
+    $email = trim($_POST['email'] ?? '');
+    if (!empty($email)) {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error = $lang === 'tr' ? 'Geçerli bir e-posta adresi giriniz.' : 'Please enter a valid email address.';
+        } else {
+            $result = requestPasswordReset($pdo, $email);
             if ($result['success']) {
-                // Ensure no output before header redirect
-                session_write_close();
-                if (ob_get_length())
-                    ob_end_clean();
-
-                $redirect = '/uye/dashboard';
-                if ($_SESSION['user_type'] === 'emlakci') $redirect = '/emlakci/dashboard';
-                elseif ($_SESSION['user_type'] === 'bireysel') $redirect = '/bireysel/dashboard';
-
-                header('Location: ' . $redirect);
-                exit;
+                $success = $result['message'];
             } else {
                 $error = $result['message'];
             }
-        } else {
-            $error = $lang === 'tr' ? 'Kullanıcı adı ve şifre gereklidir.' : 'Username and password are required.';
         }
-    } catch (Throwable $e) {
-        $error = "Hata oluştu: " . $e->getMessage();
+    } else {
+        $error = $lang === 'tr' ? 'E-posta adresi gereklidir.' : 'Email address is required.';
     }
 }
 ?>
@@ -55,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        <?php echo $lang === 'tr' ? 'Giriş Yap' : 'Login'; ?> - Emlaxia
+        <?php echo $lang === 'tr' ? 'Şifremi Unuttum' : 'Forgot Password'; ?> - Emlaxia
     </title>
     <base href="/">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -105,13 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             max-width: 220px;
             height: auto;
             margin-bottom: 0.5rem;
-        }
-
-        .login-logo h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin: 0;
         }
 
         .login-logo p {
@@ -184,6 +161,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: 1px solid #fecaca;
         }
 
+        .alert-success {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
         .register-link {
             text-align: center;
             margin-top: 1.5rem;
@@ -200,37 +183,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .register-link a:hover {
             text-decoration: underline;
         }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin: 1.5rem 0;
-            color: #94a3b8;
-            font-size: 0.85rem;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: #e2e8f0;
-        }
-
-        .admin-link {
-            text-align: center;
-            font-size: 0.8rem;
-        }
-
-        .admin-link a {
-            color: #94a3b8;
-            text-decoration: none;
-        }
-
-        .admin-link a:hover {
-            color: #1e88e5;
-        }
     </style>
 </head>
 
@@ -240,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="login-logo">
                 <img src="/Logo.png" alt="Emlaxia Logo" class="brand-logo">
                 <p>
-                    <?php echo $lang === 'tr' ? 'Hesabınıza giriş yapın' : 'Login to your account'; ?>
+                    <?php echo $lang === 'tr' ? 'Şifrenizi sıfırlayın' : 'Reset your password'; ?>
                 </p>
             </div>
 
@@ -250,51 +202,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             <?php endif; ?>
 
-            <form method="POST" action="/giris">
-                <div class="form-group">
-                    <label>
-                        <?php echo $lang === 'tr' ? 'Kullanıcı Adı veya E-posta' : 'Username or Email'; ?>
-                    </label>
-                    <input type="text" name="username" required autofocus
-                        placeholder="<?php echo $lang === 'tr' ? 'Kullanıcı adınız veya e-posta' : 'Your username or email'; ?>">
+            <?php if ($success): ?>
+                <div class="alert alert-success">
+                    <?php echo htmlspecialchars($success); ?>
                 </div>
+            <?php endif; ?>
 
-                <div class="form-group">
-                    <label>
-                        <?php echo t('password'); ?>
-                    </label>
-                    <input type="password" name="password" required
-                        placeholder="<?php echo $lang === 'tr' ? 'Şifreniz' : 'Your password'; ?>">
-                    <div style="text-align: right; margin-top: 0.5rem;">
-                        <a href="/sifremi-unuttum" style="font-size: 0.85rem; color: #1e88e5; text-decoration: none; font-weight: 500;">
-                            <?php echo $lang === 'tr' ? 'Şifremi Unuttum?' : 'Forgot Password?'; ?>
-                        </a>
+            <?php if (!$success): ?>
+                <form method="POST" action="/sifremi-unuttum">
+                    <div class="form-group">
+                        <label>
+                            <?php echo $lang === 'tr' ? 'E-posta Adresi' : 'Email Address'; ?>
+                        </label>
+                        <input type="email" name="email" required autofocus
+                            placeholder="<?php echo $lang === 'tr' ? 'E-posta adresiniz' : 'Your email address'; ?>">
                     </div>
-                </div>
 
-                <button type="submit" class="btn-login">
-                    <?php echo $lang === 'tr' ? 'Giriş Yap' : 'Login'; ?>
-                </button>
-            </form>
+                    <button type="submit" class="btn-login">
+                        <?php echo $lang === 'tr' ? 'Sıfırlama Bağlantısı Gönder' : 'Send Reset Link'; ?>
+                    </button>
+                </form>
+            <?php endif; ?>
 
             <div class="register-link">
-                <?php echo $lang === 'tr' ? 'Hesabınız yok mu?' : "Don't have an account?"; ?>
-                <a href="/kayit">
-                    <?php echo $lang === 'tr' ? 'Kayıt Ol' : 'Register'; ?>
+                <a href="/giris">←
+                    <?php echo $lang === 'tr' ? 'Girişe Dön' : 'Back to Login'; ?>
                 </a>
             </div>
-
-            <div class="divider">
-                <?php echo $lang === 'tr' ? 'veya' : 'or'; ?>
-            </div>
-
-            <div class="register-link" style="margin-top: 0;">
-                <a href="/">←
-                    <?php echo $lang === 'tr' ? 'Ana Sayfaya Dön' : 'Back to Home'; ?>
-                </a>
-            </div>
-
-            <!-- Admin login hidden as requested -->
         </div>
     </div>
 </body>

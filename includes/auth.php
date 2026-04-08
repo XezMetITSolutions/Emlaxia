@@ -87,6 +87,82 @@ function registerUser($pdo, $data)
 }
 
 /**
+ * Şifre sıfırlama isteği
+ */
+function requestPasswordReset($pdo, $email)
+{
+    $stmt = $pdo->prepare("SELECT id, full_name, username FROM users WHERE email = :email");
+    $stmt->execute([':email' => $email]);
+    $user = $stmt->fetch();
+
+    if (!$user) {
+        // Güvenlik için e-posta yoksa bile "gönderildi" mesajı verilebilir 
+        // ama kullanıcı deneyimi için hata dündürelim
+        return ['success' => false, 'message' => 'Bu e-posta adresi ile kayıtlı kullanıcı bulunamadı.'];
+    }
+
+    $token = bin2hex(random_bytes(32));
+    $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+    $stmt = $pdo->prepare("UPDATE users SET reset_token = :token, reset_expires = :expires WHERE id = :id");
+    $stmt->execute([
+        ':token' => $token,
+        ':expires' => $expires,
+        ':id' => $user['id']
+    ]);
+
+    // Sıfırlama e-postası gönder
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'];
+    $resetLink = "$protocol://$host/sifre-sifirla.php?token=$token";
+
+    $subject = "Emlaxia - Şifre Sıfırlama";
+    $message = "Merhaba " . ($user['full_name'] ?? $user['username']) . ",\n\n";
+    $message .= "Şifrenizi sıfırlamak için aşağıdaki bağlantıya tıklayınız (Bu bağlantı 1 saat geçerlidir):\n";
+    $message .= $resetLink . "\n\n";
+    $message .= "Eğer bu isteği siz yapmadıysanız lütfen bu e-postayı dikkate almayınız.\n\n";
+    $message .= "Emlaxia Ekibi";
+
+    $headers = "From: Emlaxia <no-reply@emlaxia.com>\r\n";
+    $headers .= "Reply-To: no-reply@emlaxia.com\r\n";
+    $headers .= "MIME-Version: 1.0\r\n";
+    $headers .= "Content-Type: text/plain; charset=utf-8\r\n";
+    $headers .= "X-Mailer: PHP/" . phpversion();
+
+    @mail($email, $subject, $message, $headers);
+
+    return ['success' => true, 'message' => 'Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.'];
+}
+
+/**
+ * Şifreyi güncelle
+ */
+function resetPassword($pdo, $token, $newPassword)
+{
+    if (strlen($newPassword) < 6) {
+        return ['success' => false, 'message' => 'Şifre en az 6 karakter olmalıdır.'];
+    }
+
+    $stmt = $pdo->prepare("SELECT id FROM users WHERE reset_token = :token AND reset_expires > NOW()");
+    $stmt->execute([':token' => $token]);
+    $user = $stmt->fetch();
+
+    if (!$user) {
+        return ['success' => false, 'message' => 'Geçersiz veya süresi dolmuş sıfırlama kodu.'];
+    }
+
+    $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+    $stmt = $pdo->prepare("UPDATE users SET password = :password, reset_token = NULL, reset_expires = NULL WHERE id = :id");
+    $stmt->execute([
+        ':password' => $hashedPassword,
+        ':id' => $user['id']
+    ]);
+
+    return ['success' => true, 'message' => 'Şifreniz başarıyla güncellendi. Yeni şifrenizle giriş yapabilirsiniz.'];
+}
+
+/**
  * Kullanıcı girişi
  */
 function loginUser($pdo, $username, $password)

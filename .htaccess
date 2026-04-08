@@ -53,7 +53,8 @@ RewriteRule ^terms\.php$ /kosullar [R=301,L,NC]
 RewriteRule ^cookies\.php$ /cerezler [R=301,L,NC]
 RewriteRule ^ilan-ver\.php$ /ilan-ver [R=301,L,NC]
 RewriteRule ^kayit-ilan\.php$ /kayit-ilan [R=301,L,NC]
-
+RewriteRule ^sifremi-unuttum\.php$ /sifremi-unuttum [R=301,L,NC]
+RewriteRule ^sifre-sifirla\.php$ /sifre-sifirla [R=301,L,NC]
 
 
 # Handle 404 errors by redirecting to homepage via 404.php
