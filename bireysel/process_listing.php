@@ -193,6 +193,30 @@ for ($i = 1; $i <= 20; $i++) {
     $images['image' . $i] = $all_images[$i - 1] ?? null;
 }
 
+// Video
+$video = null;
+if (!empty($_FILES['video']['name'])) {
+    $allowed_extensions = ['mp4', 'webm', 'ogg'];
+    $file_extension = strtolower(pathinfo($_FILES['video']['name'], PATHINFO_EXTENSION));
+
+    if (in_array($file_extension, $allowed_extensions)) {
+        if ($_FILES['video']['size'] <= 50 * 1024 * 1024) {
+            $fn = time() . '_video_' . basename($_FILES['video']['name']);
+            if (move_uploaded_file($_FILES['video']['tmp_name'], '../uploads/' . $fn)) {
+                $video = $fn;
+            }
+        }
+    }
+} elseif ($is_edit) {
+    if (isset($_POST['delete_video']) && $_POST['delete_video'] == '1') {
+        $video = null;
+    } else {
+        $stmt = $pdo->prepare("SELECT video FROM listings WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        $video = $stmt->fetchColumn();
+    }
+}
+
 try {
     if ($is_edit) {
         $sql = "UPDATE listings SET title_tr=:title_tr, title_en=:title_en, description_tr=:description_tr, description_en=:description_en,
@@ -235,6 +259,7 @@ try {
                 site_restorant=:site_restorant, site_kuafor=:site_kuafor,
                 site_toplanti_odasi=:site_toplanti_odasi, site_bahce=:site_bahce,
                 site_evcil_hayvan=:site_evcil_hayvan, site_engelli_erisimi=:site_engelli_erisimi,
+                video = :video,
                 approval_status='pending'";
         for ($i = 1; $i <= 20; $i++)
             $sql .= ", image$i = :image$i";
@@ -338,6 +363,7 @@ try {
             ':site_bahce' => $site_feature_vals['site_bahce'],
             ':site_evcil_hayvan' => $site_feature_vals['site_evcil_hayvan'],
             ':site_engelli_erisimi' => $site_feature_vals['site_engelli_erisimi'],
+            ':video' => $video,
             ':id' => $id,
             ':uid' => $user_id
         ];
@@ -367,7 +393,7 @@ try {
                 site_acik_otopark, site_tenis_kortu, site_basketbol_sahasi, site_market,
                 site_kres, site_cafe, site_restorant, site_kuafor,
                 site_toplanti_odasi, site_bahce, site_evcil_hayvan, site_engelli_erisimi,
-                user_id,user_type,created_by,approval_status,ilan_sahibi_turu";
+                user_id,user_type,created_by,approval_status,ilan_sahibi_turu,video";
         for ($i = 1; $i <= 20; $i++)
             $sql .= ",image$i";
         $sql .= ") VALUES (:title_tr,:title_en,:description_tr,:description_en,:property_type,:property_type_en,:listing_type,
@@ -390,7 +416,7 @@ try {
                 :site_acik_otopark, :site_tenis_kortu, :site_basketbol_sahasi, :site_market,
                 :site_kres, :site_cafe, :site_restorant, :site_kuafor,
                 :site_toplanti_odasi, :site_bahce, :site_evcil_hayvan, :site_engelli_erisimi,
-                :user_id,'bireysel',:created_by,'pending','Bireysel'";
+                :user_id,'bireysel',:created_by,'pending','Bireysel',:video";
         for ($i = 1; $i <= 20; $i++)
             $sql .= ",:image$i";
         $sql .= ")";
@@ -494,7 +520,8 @@ try {
             ':site_evcil_hayvan' => $site_feature_vals['site_evcil_hayvan'],
             ':site_engelli_erisimi' => $site_feature_vals['site_engelli_erisimi'],
             ':user_id' => $user_id,
-            ':created_by' => $user_id
+            ':created_by' => $user_id,
+            ':video' => $video
         ];
         foreach ($images as $k => $v)
             $params[":$k"] = $v;

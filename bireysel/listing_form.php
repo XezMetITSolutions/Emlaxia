@@ -143,108 +143,89 @@ if ($is_edit && !empty($listing['district'])) {
             .page-container { padding: 1rem; }
         }
 
-        /* --- Premium Multi Image Upload Styles --- */
+        /* --- Premium Multi Image & Video Upload Styles --- */
         .multi-upload-dropzone {
-            border: 3px dashed #cbd5e1;
-            border-radius: 16px;
-            padding: 3rem 2rem;
+            border: 3px dashed var(--gray-300);
+            border-radius: var(--radius-2xl);
+            padding: 4rem 2rem;
             text-align: center;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.02) 0%, rgba(59, 130, 246, 0.05) 100%);
-            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.5);
+            transition: var(--transition);
             cursor: pointer;
-            min-height: 200px;
+            min-height: 250px;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
 
         .multi-upload-dropzone:hover {
-            border-color: #3b82f6;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border-color: var(--primary-color);
+            background: rgba(15, 18, 61, 0.02);
+            transform: translateY(-2px);
         }
 
         .multi-upload-dropzone.dragover {
-            border-color: #3b82f6;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.15) 100%);
-            transform: scale(1.01);
+            border-color: var(--success-color);
+            background: rgba(16, 185, 129, 0.05);
+            transform: scale(1.02);
         }
 
         .dropzone-content {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1rem;
+            gap: 1.5rem;
+            z-index: 1;
         }
 
-        .dropzone-content svg { color: #3b82f6; opacity: 0.7; }
-        .dropzone-content h3 { font-size: 1.25rem; font-weight: 600; color: #1e293b; margin: 0; }
-        .dropzone-content p { color: #64748b; margin: 0; }
-        .dropzone-content .upload-hint { font-size: 0.85rem; color: #94a3b8; }
+        .dropzone-content i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .multi-upload-dropzone:hover .dropzone-content i {
+            transform: scale(1.1) rotate(5deg);
+        }
 
         .uploaded-images-container {
-            margin-top: 2rem;
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 1.5rem;
-            border: 1px solid #e2e8f0;
-        }
-
-        .uploaded-images-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .uploaded-images-header h4 {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin: 0;
-        }
-
-        .main-image-hint {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            color: #64748b;
-            margin-bottom: 1rem;
-            padding: 0.75rem 1rem;
-            background: rgba(59, 130, 246, 0.05);
-            border-radius: 10px;
-            border-left: 3px solid #3b82f6;
+            margin-top: 2.5rem;
+            background: white;
+            border-radius: var(--radius-2xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-200);
         }
 
         .uploaded-images-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.5rem;
         }
 
         .uploaded-image-item {
             position: relative;
-            border-radius: 12px;
+            border-radius: var(--radius-xl);
             overflow: hidden;
-            aspect-ratio: 1;
-            background: #f8fafc;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            aspect-ratio: 4/3;
+            background: var(--gray-100);
+            cursor: move;
+            transition: var(--transition);
             border: 3px solid transparent;
+            box-shadow: var(--shadow-md);
         }
 
         .uploaded-image-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-xl);
         }
 
         .uploaded-image-item.main-image {
-            border-color: #f59e0b;
+            border-color: var(--warning-color);
+            transform: scale(1.02);
         }
 
         .uploaded-image-item img {
@@ -255,55 +236,113 @@ if ($is_edit && !empty($listing['district'])) {
 
         .uploaded-image-item .btn-remove {
             position: absolute;
-            top: 6px;
-            right: 6px;
-            width: 24px;
-            height: 24px;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
-            background: rgba(239, 68, 68, 0.9);
+            background: var(--danger-color);
             color: white;
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
+            font-size: 0.9rem;
             z-index: 10;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
         }
 
-        .uploaded-image-item .main-badge {
+        .uploaded-image-item .btn-remove:hover {
+            transform: scale(1.1) rotate(90deg);
+            background: #b91c1c;
+        }
+
+        .main-badge {
             position: absolute;
-            top: 6px;
-            left: 6px;
-            background: #f59e0b;
+            top: 8px;
+            left: 8px;
+            background: var(--warning-color);
             color: white;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
             font-size: 0.7rem;
             font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 6px;
             display: flex;
             align-items: center;
-            gap: 3px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            gap: 5px;
+            box-shadow: var(--shadow-md);
+            z-index: 5;
         }
 
-        .uploaded-image-item .set-main-btn {
+        .set-main-btn {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: rgba(15, 23, 42, 0.7);
+            background: rgba(15, 18, 61, 0.85);
             color: white;
             border: none;
-            padding: 4px 0;
-            font-size: 0.7rem;
+            padding: 8px 0;
+            font-size: 0.75rem;
+            font-weight: 600;
             cursor: pointer;
             opacity: 0;
-            transition: opacity 0.2s;
+            transition: var(--transition);
+            backdrop-filter: blur(4px);
         }
 
         .uploaded-image-item:hover .set-main-btn {
             opacity: 1;
+        }
+
+        /* Video Section Styles */
+        .video-upload-section {
+            margin-top: 3rem;
+            padding-top: 3rem;
+            border-top: 2px dashed var(--gray-200);
+        }
+
+        .video-preview-container {
+            margin-top: 1.5rem;
+            background: var(--gray-900);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            position: relative;
+            max-width: 500px;
+            aspect-ratio: 16/9;
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .video-preview-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .btn-remove-video {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: var(--radius-lg);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 10;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-remove-video:hover {
+            background: #b91c1c;
+            transform: scale(1.05);
         }
 
         .btn-add-more {
@@ -1127,57 +1166,87 @@ if ($is_edit && !empty($listing['district'])) {
                 </div>
             </div>
 
-            <!-- 6. Resimler -->
+            <!-- 6. Resimler & Video -->
             <div class="form-section">
-                <div class="form-section-title">📷 Resimler</div>
-                <p style="color: #64748b; margin-bottom: 1.5rem; font-size: 0.9rem;">
-                    Maksimum 30 resim yükleyebilirsiniz. Resimleri sürükleyip bırakabilir veya butona tıklayarak seçebilirsiniz. Ana resmi belirlemek için resmin üzerine tıklayın.
+                <div class="form-section-title">🖼️ <?php echo $lang == 'tr' ? 'Medya Galerisi' : 'Media Gallery'; ?></div>
+                <p style="color: #64748b; margin-bottom: 2rem; font-size: 0.95rem;">
+                    <?php echo $lang == 'tr' ? 'İlanınızın kalitesini artırmak için en az 5 adet yüksek çözünürlüklü resim eklemenizi öneririz.' : 'We recommend adding at least 5 high-resolution images to increase the quality of your listing.'; ?>
                 </p>
 
                 <!-- Premium Drop Zone -->
                 <div class="multi-upload-dropzone" id="multi-dropzone">
                     <div class="dropzone-content">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                            <polyline points="21 15 16 10 5 21"></polyline>
-                        </svg>
-                        <h3>Resimleri Buraya Sürükleyin veya Tıklayın</h3>
-                        <p class="upload-hint">PNG, JPG, JPEG, WEBP • Maks. 30 resim • Maks. 5MB/resim</p>
-                        <button type="button" class="btn-submit" style="margin-top: 0.5rem; padding: 0.5rem 1.5rem;" onclick="event.stopPropagation(); document.getElementById('imageInput').click()">Dosya Seç</button>
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3><?php echo $lang == 'tr' ? 'Resimleri Buraya Sürükleyin' : 'Drag & Drop Images Here'; ?></h3>
+                        <p><?php echo $lang == 'tr' ? 'veya' : 'or'; ?></p>
+                        <button type="button" class="btn btn-primary" style="padding: 0.75rem 2.5rem;" onclick="document.getElementById('imageInput').click()">
+                            <i class="fas fa-images"></i> <?php echo $lang == 'tr' ? 'Dosya Seç' : 'Browse Files'; ?>
+                        </button>
+                        <p class="upload-hint">PNG, JPG, WEBP • Max 10MB • <?php echo $lang == 'tr' ? 'En fazla 30 adet' : 'Up to 30 items'; ?></p>
                     </div>
-                    <input type="file" id="imageInput" name="uploaded_images[]" multiple accept="image/*" style="display: none;" onchange="previewImages(this)">
+                    <input type="file" id="imageInput" multiple accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
                 </div>
 
                 <!-- Yüklenen Resimler Grid -->
-                <div class="uploaded-images-container" id="uploaded-images-container" style="display: none;">
+                <div class="uploaded-images-container" id="uploaded-images-container" style="<?php echo ($is_edit && !empty($listing['image1'])) ? '' : 'display: none;'; ?>">
                     <div class="uploaded-images-header">
                         <h4>
-                            <i class="fas fa-images"></i> Yüklenen Resimler (<span id="image-count">0</span>/30)
+                            <i class="fas fa-th-large"></i> <?php echo $lang == 'tr' ? 'Yüklenen Resimler' : 'Uploaded Images'; ?> 
+                            (<span id="image-count">0</span>/30)
                         </h4>
-                        <button type="button" class="btn-add-more" onclick="document.getElementById('imageInput').click()">
-                            <i class="fas fa-plus"></i> Daha Fazla Ekle
+                        <button type="button" class="btn btn-secondary btn-small" onclick="document.getElementById('imageInput').click()">
+                            <i class="fas fa-plus"></i> <?php echo $lang == 'tr' ? 'Daha Fazla Ekle' : 'Add More'; ?>
                         </button>
                     </div>
                     <div class="main-image-hint">
-                        <i class="fas fa-info-circle"></i> Ana resmi belirlemek için bir resme tıklayın veya "Yıldız" ikonunu kullanın.
+                        <i class="fas fa-star"></i> <?php echo $lang == 'tr' ? 'Ana resim olarak belirlemek istediğiniz görselin üzerine tıklayın.' : 'Click on an image to set it as the main photo.'; ?>
                     </div>
                     <div class="uploaded-images-grid" id="previewGrid">
-                        <?php if ($is_edit): ?>
-                            <?php 
-                            $existing_images = [];
-                            for ($i = 1; $i <= 20; $i++) {
-                                if (!empty($listing['image' . $i])) {
-                                    $existing_images[] = $listing['image' . $i];
-                                }
-                            }
-                            ?>
-                            <input type="hidden" id="existing-images-json" value='<?php echo json_encode($existing_images); ?>'>
-                        <?php endif; ?>
+                        <!-- JS handles items -->
                     </div>
                 </div>
+
+                <!-- Video Upload Section -->
+                <div class="video-upload-section">
+                    <div class="form-section-title" style="border:none; margin-bottom: 0.5rem;">🎥 <?php echo $lang == 'tr' ? 'Video Tanıtımı (Opsiyonel)' : 'Video Tour (Optional)'; ?></div>
+                    <p style="color: #64748b; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                        <?php echo $lang == 'tr' ? 'Video olan ilanlar %40 daha fazla ilgi görmektedir. Max: 50MB (MP4, WEBM)' : 'Listings with videos get 40% more engagement. Max: 50MB (MP4, WEBM)'; ?>
+                    </p>
+
+                    <div id="video-upload-box" class="multi-upload-dropzone" style="min-height: 180px; <?php echo (!empty($listing['video'])) ? 'display:none;' : ''; ?>">
+                        <div class="dropzone-content" style="gap: 1rem;">
+                            <i class="fas fa-film" style="font-size: 2.5rem;"></i>
+                            <button type="button" class="btn btn-secondary btn-small" onclick="document.getElementById('videoInput').click()">
+                                <i class="fas fa-plus"></i> <?php echo $lang == 'tr' ? 'Video Yükle' : 'Upload Video'; ?>
+                            </button>
+                        </div>
+                        <input type="file" id="videoInput" name="video" accept="video/*" style="display: none;" onchange="handleVideoPreview(event)">
+                    </div>
+
+                    <div id="video-preview-wrapper" class="video-preview-container" style="<?php echo (empty($listing['video'])) ? 'display:none;' : ''; ?>">
+                        <?php if (!empty($listing['video'])): ?>
+                            <video src="/uploads/<?php echo $listing['video']; ?>" controls></video>
+                        <?php else: ?>
+                            <video controls></video>
+                        <?php endif; ?>
+                        <button type="button" class="btn-remove-video" onclick="removeVideo()">
+                            <i class="fas fa-trash"></i> <?php echo $lang == 'tr' ? 'Videoyu Kaldır' : 'Remove Video'; ?>
+                        </button>
+                    </div>
+                    <input type="hidden" name="delete_video" id="delete_video_input" value="0">
+                </div>
+
                 <input type="hidden" name="existing_images_list" id="existingImagesList" value="">
                 <input type="hidden" name="main_image_index" id="main_image_index" value="0">
+                <?php if ($is_edit): ?>
+                    <?php 
+                    $existing_imgs = [];
+                    for ($i = 1; $i <= 20; $i++) {
+                        if (!empty($listing['image' . $i])) $existing_imgs[] = $listing['image' . $i];
+                    }
+                    ?>
+                    <input type="hidden" id="existing-images-json" value='<?php echo json_encode($existing_imgs); ?>'>
+                <?php endif; ?>
             </div>
 
             <!-- 7. Ek Notlar -->
