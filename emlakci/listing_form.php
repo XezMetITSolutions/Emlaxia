@@ -49,6 +49,7 @@ if ($is_edit && !empty($listing['district'])) {
         $neighborhoods = $stmt->fetchAll();
     }
 }
+    $lang = $_SESSION['lang'] ?? 'tr';
 ?>
 <!DOCTYPE html>
 <html lang="tr">
@@ -58,8 +59,9 @@ if ($is_edit && !empty($listing['district'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $is_edit ? 'İlan Düzenle' : 'Yeni İlan Ekle'; ?> - Emlaxia</title>
     <base href="/">
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css?v=<?php echo time(); ?>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
             font-family: 'Inter', sans-serif;
