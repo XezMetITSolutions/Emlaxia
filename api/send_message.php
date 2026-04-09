@@ -31,6 +31,11 @@ try {
     }
 
     $receiver_id = $listing['user_id'];
+    
+    if (!$receiver_id) {
+        echo json_encode(['success' => false, 'message' => 'Bu ilan için mesaj gönderilemez (İlan sahibi bulunamadı).']);
+        exit;
+    }
 
     if ($sender_id == $receiver_id) {
         echo json_encode(['success' => false, 'message' => 'Kendi ilanınıza mesaj gönderemezsiniz']);

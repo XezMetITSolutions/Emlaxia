@@ -762,31 +762,33 @@ $comments = $stmt->fetchAll();
                     </div>
 
                     <!-- Direkt Mesaj -->
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <div class="pd-dm-card">
-                            <h3 class="pd-sidebar-title">
-                                <i class="fas fa-comment-dots" style="color: #D3AF37;"></i>
-                                <?php echo $lang == 'tr' ? 'İlan Sahibine Mesaj' : 'Message Owner'; ?>
-                            </h3>
-                            <form id="dm-form" class="pd-dm-form">
-                                <input type="hidden" name="listing_id" value="<?php echo $listing['id']; ?>">
-                                <div class="pd-form-group">
-                                    <textarea name="message" rows="3" required 
-                                        placeholder="<?php echo $lang == 'tr' ? 'Sorularınızı buraya yazabilirsiniz...' : 'Write your questions here...'; ?>"></textarea>
-                                </div>
-                                <button type="submit" class="pd-submit-btn" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
-                                    <i class="fas fa-paper-plane"></i>
-                                    <?php echo $lang == 'tr' ? 'Mesaj Gönder' : 'Send Message'; ?>
-                                </button>
-                            </form>
-                        </div>
-                    <?php else: ?>
-                        <div class="pd-sidebar-card" style="text-align: center;">
-                            <p style="color: var(--gray-500); margin-bottom: 1rem; font-size: 0.9375rem;">
-                                <?php echo $lang == 'tr' ? 'İlan sahibiyle mesajlaşmak için giriş yapın.' : 'Log in to message the owner.'; ?>
-                            </p>
-                            <a href="/login" class="pd-login-link"><?php echo $lang == 'tr' ? 'Giriş Yap' : 'Log In'; ?></a>
-                        </div>
+                    <?php if ($listing['user_id']): ?>
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                            <div class="pd-dm-card">
+                                <h3 class="pd-sidebar-title">
+                                    <i class="fas fa-comment-dots" style="color: #D3AF37;"></i>
+                                    <?php echo $lang == 'tr' ? 'İlan Sahibine Mesaj' : 'Message Owner'; ?>
+                                </h3>
+                                <form id="dm-form" class="pd-dm-form">
+                                    <input type="hidden" name="listing_id" value="<?php echo $listing['id']; ?>">
+                                    <div class="pd-form-group">
+                                        <textarea name="message" rows="3" required 
+                                            placeholder="<?php echo $lang == 'tr' ? 'Sorularınızı buraya yazabilirsiniz...' : 'Write your questions here...'; ?>"></textarea>
+                                    </div>
+                                    <button type="submit" class="pd-submit-btn" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+                                        <i class="fas fa-paper-plane"></i>
+                                        <?php echo $lang == 'tr' ? 'Mesaj Gönder' : 'Send Message'; ?>
+                                    </button>
+                                </form>
+                            </div>
+                        <?php else: ?>
+                            <div class="pd-sidebar-card" style="text-align: center;">
+                                <p style="color: var(--gray-500); margin-bottom: 1rem; font-size: 0.9375rem;">
+                                    <?php echo $lang == 'tr' ? 'İlan sahibiyle mesajlaşmak için giriş yapın.' : 'Log in to message the owner.'; ?>
+                                </p>
+                                <a href="/login" class="pd-login-link"><?php echo $lang == 'tr' ? 'Giriş Yap' : 'Log In'; ?></a>
+                            </div>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </div>
             </div>

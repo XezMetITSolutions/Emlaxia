@@ -10,7 +10,10 @@ if (!isset($_SESSION['admin_logged_in']) || !$_SESSION['admin_logged_in']) {
 // AJAX silme işlemi artık delete_listing.php'de yapılıyor
 
 // İlanları getir
-$stmt = $pdo->query("SELECT * FROM listings ORDER BY created_at DESC");
+$stmt = $pdo->query("SELECT l.*, u.full_name, u.username, u.email, u.user_type, u.firma_adi 
+                       FROM listings l 
+                       LEFT JOIN users u ON l.user_id = u.id 
+                       ORDER BY l.created_at DESC");
 $listings = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
@@ -38,6 +41,7 @@ $listings = $stmt->fetchAll();
                     <thead>
                         <tr>
                             <th>ID</th>
+                            <th><?php echo $lang == 'tr' ? 'Kullanıcı' : 'User'; ?></th>
                             <th><?php echo t('title'); ?></th>
                             <th><?php echo t('property_type'); ?></th>
                             <th><?php echo t('price'); ?></th>
@@ -54,6 +58,26 @@ $listings = $stmt->fetchAll();
                             <?php foreach ($listings as $listing): ?>
                                 <tr>
                                     <td><?php echo $listing['id']; ?></td>
+                                    <td>
+                                        <?php if ($listing['full_name'] || $listing['username']): ?>
+                                            <div style="font-weight: 600; color: #0F123D;">
+                                                <?php echo htmlspecialchars($listing['full_name'] ?: $listing['username']); ?>
+                                            </div>
+                                            <div style="font-size: 0.75rem; color: #64748b;">
+                                                <?php echo htmlspecialchars($listing['email']); ?>
+                                            </div>
+                                            <?php if ($listing['user_type'] === 'emlakci' && $listing['firma_adi']): ?>
+                                                <div style="font-size: 0.75rem; color: #64748b; font-style: italic;">
+                                                    🏢 <?php echo htmlspecialchars($listing['firma_adi']); ?>
+                                                </div>
+                                            <?php endif; ?>
+                                            <span class="user-badge badge-<?php echo $listing['user_type']; ?>">
+                                                <?php echo $listing['user_type'] === 'emlakci' ? '🏢 Emlakçı' : '👤 Bireysel'; ?>
+                                            </span>
+                                        <?php else: ?>
+                                            <span style="color: #94a3b8; font-size: 0.85rem;">Sistem / Silinmiş</span>
+                                        <?php endif; ?>
+                                    </td>
                                     <td><?php echo htmlspecialchars($listing['title_' . $lang]); ?></td>
                                     <td><?php echo t($listing['property_type']); ?></td>
                                     <td><?php echo number_format($listing['price'], 2, ',', '.'); ?>
@@ -230,6 +254,25 @@ $listings = $stmt->fetchAll();
 
         .admin-table tbody tr {
             transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .user-badge {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 600;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+
+        .badge-emlakci {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .badge-bireysel {
+            background: #dbeafe;
+            color: #2563eb;
         }
     </style>
 </body>
