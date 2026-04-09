@@ -20,22 +20,24 @@ try {
     }
 
     $targetId = $emlaxia['id'];
+    $adminId = $_SESSION['admin_id'];
 
     // 2. Perform migration
-    // We update owner, type, display type, and creator
+    // user_id -> Emlaxia User ID (from users table)
+    // created_by -> Active Admin ID (from admins table) - to satisfy foreign key constraints
     $sql = "UPDATE listings SET 
             user_id = :tid1, 
             user_type = 'emlakci', 
             ilan_sahibi_turu = 'Emlakçı', 
-            created_by = :tid2,
+            created_by = :aid1,
             approval_status = 'approved'
-            WHERE user_id != :tid3 OR user_id IS NULL";
+            WHERE user_id != :tid2 OR user_id IS NULL";
             
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
         ':tid1' => $targetId,
-        ':tid2' => $targetId,
-        ':tid3' => $targetId
+        ':aid1' => $adminId,
+        ':tid2' => $targetId
     ]);
     $affectedListings = $stmt->rowCount();
 
