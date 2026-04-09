@@ -24,15 +24,19 @@ try {
     // 2. Perform migration
     // We update owner, type, display type, and creator
     $sql = "UPDATE listings SET 
-            user_id = :targetId, 
+            user_id = :tid1, 
             user_type = 'emlakci', 
             ilan_sahibi_turu = 'Emlakçı', 
-            created_by = :targetId,
+            created_by = :tid2,
             approval_status = 'approved'
-            WHERE user_id != :targetId OR user_id IS NULL";
+            WHERE user_id != :tid3 OR user_id IS NULL";
             
     $stmt = $pdo->prepare($sql);
-    $stmt->execute([':targetId' => $targetId]);
+    $stmt->execute([
+        ':tid1' => $targetId,
+        ':tid2' => $targetId,
+        ':tid3' => $targetId
+    ]);
     $affectedListings = $stmt->rowCount();
 
     // 3. Optional: Migrate other entities if they are linked to old users but should now be "received" by Emlaxia
