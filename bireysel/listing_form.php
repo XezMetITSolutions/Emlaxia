@@ -1016,6 +1016,7 @@ if ($is_edit && !empty($listing['district'])) {
                         </select>
                     </div>
                 </div>
+            </div>
 
             <!-- 5. Bina Özellikleri (Konut/Dükkan) -->
             <div class="form-section conditional-field" id="building-features-section">
