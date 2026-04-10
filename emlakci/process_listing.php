@@ -568,7 +568,7 @@ try {
             ':site_evcil_hayvan' => $site_feature_vals['site_evcil_hayvan'],
             ':site_engelli_erisimi' => $site_feature_vals['site_engelli_erisimi'],
             ':user_id' => $user_id,
-            ':created_by' => $user_id,
+            ':created_by' => null,
             ':video' => $video
         ];
 
