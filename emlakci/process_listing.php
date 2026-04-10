@@ -132,6 +132,12 @@ $ana_yola_cephe = $_POST['ana_yola_cephe'] ?? null;
 $mutfak_ticari = $_POST['mutfak_ticari'] ?? null;
 $kullanim_durumu_ticari = $_POST['kullanim_durumu_ticari'] ?? null;
 
+// SEO & Map fields
+$map_address = $_POST['map_address'] ?? '';
+$meta_title = $_POST['meta_title'] ?? '';
+$meta_description = $_POST['meta_description'] ?? '';
+$komisyon_yuzdesi = $_POST['komisyon_yuzdesi'] ?? null;
+
 $site_features = [
     'site_guvenlik', 'site_spor_salonu', 'site_yuzme_havuzu', 'site_cocuk_parki',
     'site_sauna', 'site_turk_hamami', 'site_jenerator', 'site_kapali_otopark',
@@ -217,7 +223,7 @@ if ($main_image_index > 0 && isset($all_images[$main_image_index])) {
 }
 
 $images = [];
-for ($i = 1; $i <= 20; $i++) {
+for ($i = 1; $i <= 10; $i++) {
     $images['image' . $i] = $all_images[$i - 1] ?? null;
 }
 
@@ -257,6 +263,7 @@ try {
                 imar_durumu = :imar_durumu, tapu_durumu = :tapu_durumu,
                 krediye_uygun = :krediye_uygun, ada_no = :ada_no, parsel_no = :parsel_no,
                 brut_metrekare = :brut_metrekare, net_metrekare = :net_metrekare,
+                oda_sayisi = :oda_sayisi, bina_yasi = :bina_yasi,
                 bulundugu_kat = :bulundugu_kat, kat_sayisi = :kat_sayisi,
                 isitma_turu = :isitma_turu, esyali = :esyali,
                 balkon = :balkon, kullanim_durumu = :kullanim_durumu,
@@ -281,6 +288,8 @@ try {
                 manzara_tipi = :manzara_tipi, doga_manzara = :doga_manzara,
                 yuk_asansor = :yuk_asansor, depo_alani = :depo_alani, yalitim = :yalitim,
                 site_icinde = :site_icinde,
+                map_address = :map_address, meta_title = :meta_title, meta_description = :meta_description,
+                komisyon_yuzdesi = :komisyon_yuzdesi,
                 site_guvenlik = :site_guvenlik, site_spor_salonu = :site_spor_salonu,
                 site_yuzme_havuzu = :site_yuzme_havuzu, site_cocuk_parki = :site_cocuk_parki,
                 site_sauna = :site_sauna, site_turk_hamami = :site_turk_hamami,
@@ -294,7 +303,7 @@ try {
                 video = :video,
                 approval_status = 'pending'";
 
-        for ($i = 1; $i <= 20; $i++)
+        for ($i = 1; $i <= 10; $i++)
             $sql .= ", image$i = :image$i";
         $sql .= " WHERE id = :id AND user_id = :uid";
 
@@ -399,11 +408,15 @@ try {
             ':site_evcil_hayvan' => $site_feature_vals['site_evcil_hayvan'],
             ':site_engelli_erisimi' => $site_feature_vals['site_engelli_erisimi'],
             ':video' => $video,
+            ':map_address' => $map_address,
+            ':meta_title' => $meta_title,
+            ':meta_description' => $meta_description,
+            ':komisyon_yuzdesi' => $komisyon_yuzdesi,
             ':id' => $id,
             ':uid' => $user_id
         ];
 
-        for ($i = 1; $i <= 20; $i++)
+        for ($i = 1; $i <= 10; $i++)
             $params[":image$i"] = $images["image$i"];
 
         $stmt->execute($params);
@@ -434,9 +447,10 @@ try {
                 site_acik_otopark, site_tenis_kortu, site_basketbol_sahasi, site_market,
                 site_kres, site_cafe, site_restorant, site_kuafor,
                 site_toplanti_odasi, site_bahce, site_evcil_hayvan, site_engelli_erisimi,
-                user_id, user_type, created_by, approval_status, ilan_sahibi_turu, video";
+                user_id, user_type, created_by, approval_status, ilan_sahibi_turu, video,
+                map_address, meta_title, meta_description, komisyon_yuzdesi";
 
-        for ($i = 1; $i <= 20; $i++)
+        for ($i = 1; $i <= 10; $i++)
             $sql .= ", image$i";
 
         $sql .= ") VALUES (:title_tr, :title_en, :description_tr, :description_en,
@@ -462,8 +476,9 @@ try {
                 :site_acik_otopark, :site_tenis_kortu, :site_basketbol_sahasi, :site_market,
                 :site_kres, :site_cafe, :site_restorant, :site_kuafor,
                 :site_toplanti_odasi, :site_bahce, :site_evcil_hayvan, :site_engelli_erisimi,
-                :user_id, 'emlakci', :created_by, 'pending', 'Emlakçı', :video";
-        for ($i = 1; $i <= 20; $i++)
+                :user_id, 'emlakci', :created_by, 'pending', 'Emlakçı', :video,
+                :map_address, :meta_title, :meta_description, :komisyon_yuzdesi";
+        for ($i = 1; $i <= 10; $i++)
             $sql .= ", :image$i";
         $sql .= ")";
 
@@ -569,7 +584,11 @@ try {
             ':site_engelli_erisimi' => $site_feature_vals['site_engelli_erisimi'],
             ':user_id' => $user_id,
             ':created_by' => null,
-            ':video' => $video
+            ':video' => $video,
+            ':map_address' => $map_address,
+            ':meta_title' => $meta_title,
+            ':meta_description' => $meta_description,
+            ':komisyon_yuzdesi' => $komisyon_yuzdesi
         ];
 
         if (!empty($images)) {

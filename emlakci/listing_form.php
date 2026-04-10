@@ -1355,7 +1355,7 @@ if ($is_edit && !empty($listing['district'])) {
                         <button type="button" class="btn btn-primary" style="padding: 0.75rem 2.5rem;" onclick="document.getElementById('imageInput').click()">
                             <i class="fas fa-images"></i> <?php echo $lang == 'tr' ? 'Dosya Seç' : 'Browse Files'; ?>
                         </button>
-                        <p class="upload-hint">PNG, JPG, WEBP • Max 10MB • <?php echo $lang == 'tr' ? 'En fazla 30 adet' : 'Up to 30 items'; ?></p>
+                        <p class="upload-hint">PNG, JPG, WEBP • Max 10MB • <?php echo $lang == 'tr' ? 'En fazla 10 adet' : 'Up to 10 items'; ?></p>
                     </div>
                     <input type="file" id="imageInput" multiple accept="image/*" style="display: none;" onchange="handleImageSelect(event)">
                 </div>
@@ -1365,7 +1365,7 @@ if ($is_edit && !empty($listing['district'])) {
                     <div class="uploaded-images-header">
                         <h4>
                             <i class="fas fa-th-large"></i> <?php echo $lang == 'tr' ? 'Yüklenen Resimler' : 'Uploaded Images'; ?> 
-                            (<span id="image-count">0</span>/30)
+                            (<span id="image-count">0</span>/10)
                         </h4>
                         <button type="button" class="btn btn-secondary btn-small" onclick="document.getElementById('imageInput').click()">
                             <i class="fas fa-plus"></i> <?php echo $lang == 'tr' ? 'Daha Fazla Ekle' : 'Add More'; ?>
@@ -1412,7 +1412,7 @@ if ($is_edit && !empty($listing['district'])) {
                 <?php if ($is_edit): ?>
                     <?php 
                     $existing_imgs = [];
-                    for ($i = 1; $i <= 20; $i++) {
+                    for ($i = 1; $i <= 10; $i++) {
                         if (!empty($listing['image' . $i])) $existing_imgs[] = $listing['image' . $i];
                     }
                     ?>
@@ -1547,7 +1547,7 @@ if ($is_edit && !empty($listing['district'])) {
 
         function processFiles(files) {
             Array.from(files).forEach(file => {
-                if (uploadedFiles.length >= 30) return;
+                if (uploadedFiles.length >= 10) return;
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     uploadedFiles.push({
